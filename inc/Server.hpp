@@ -34,9 +34,12 @@ class Server
 		void			handle_command(std::list<pollfd>::iterator it);
 		void			add_socket_to_list(std::list<pollfd> *pfds, int filed, short ev, short rev);
 		std::string		reply(std::string reply_code, std::string target,std::string msg);
+		int				complete_command();
+		int				check_nicknames(std::string nick);
 		
 		/* accessors */
 		std::string		get_password();
+		std::list<Client> get_listClient();
 
 
 	private:
@@ -47,6 +50,8 @@ class Server
 		std::list<pollfd>	pfds;
 		struct pollfd		*arr_pfds;
 		char				buf[1000];
+		std::string			save;
+		std::string			cmd;
 		int					listener;
 		std::list<Client>	clients;
 

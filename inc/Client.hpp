@@ -2,8 +2,17 @@
 # define CLIENT_HPP
 
 # include <iostream>
-# include <string>
 # include <string.h>
+# include <sys/types.h>
+# include <sys/socket.h>
+# include <netdb.h>
+# include <poll.h>
+# include <iostream>
+# include <string>
+# include <cstring>
+# include <list>
+# include <unistd.h>
+# include <fcntl.h>
 
 class Client
 {
@@ -16,22 +25,34 @@ class Client
 
 		Client &		operator=( Client const & rhs );
 
-	std::string			handle_new_entry(std::string str);
+	void				handle_new_entry(std::string str);
+	int					complete_command();
+	void				connection();
 
 	std::string			get_cap();
 	std::string			get_nick();
 	std::string			get_pass();
+	std::string			get_user();
+	std::string			get_mode();
+	std::string			get_unused();
+	std::string			get_realname();
+	void				set_nick(std::string nickname);
+	char				*get_buf();
+
 	int					get_fd();
 
 	private:
 
 	std::string			nick;
-	std::string			fullname;
+	std::string			user;
+	std::string			mode;
+	std::string			unused;
+	std::string			realname;
 	std::string			pass;
-	std::string			cap;
-	std::string			server;
-	std::string			username;
 	int					fd;
+	char				buf[1000];
+	std::string			save;
+	std::string			cmd;
 
 
 };

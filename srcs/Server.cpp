@@ -118,6 +118,14 @@ void	Server::poll_loop()
 {
 	while (1)
 	{
+		std::list<Client>::iterator it = clients.begin();
+		std::list<Client>::iterator itend = clients.end();
+
+		while (it != itend)
+		{
+			std::cout << it->get_nick();
+			it++;
+		}
 		std::cout << "polling fds..." << std::endl;
 		polling();
 		handle_pfds();
@@ -155,43 +163,37 @@ void	Server::handle_new_connection()
 	struct sockaddr_storage	remote_addr;
 	socklen_t addr_size = sizeof(remote_addr);
 	int new_fd = accept(this->listener, (struct sockaddr *)&remote_addr, &addr_size);
-	Client		new_client(new_fd);
+	Client		*new_client = new Client(new_fd);
 
-	memset(this->buf, 0, 1000);
-	recv(new_client.get_fd(), this->buf, 1000, 0);
-	std::string tmp(this->buf);
-	std::cout << "---CONNECT PACKET-----\n" + tmp + "\n----------------------" << std::endl;
+	new_client->connection();
 
-
-	while (new_client.get_nick().empty() || new_client.get_pass().empty())
+	if (!this->check_nicknames(new_client->get_nick()))
 	{
-		tmp = new_client.handle_new_entry(tmp);
-		//std::cout << tmp << std::endl;
-	}
-
-	std::cout << "nick :" << new_client.get_nick() << std::endl;
-	std::cout << "pass :" << new_client.get_pass() << std::endl;
-
-	if (!this->password.compare(new_client.get_pass()))
-	{
-		add_socket_to_list(&this->pfds, new_fd, POLLIN, 0);
-		std::string reply = this->reply("001", new_client.get_nick(), "Welcome to the Internet Relay Chat Network " + this->address);
-		send(new_client.get_fd(), reply.c_str(), reply.length() + 1, SOCK_STREAM);
-		std::cout << "pollserver: new connection" << std::endl;
+		if (!this->password.compare(new_client->get_pass()))
+		{
+			add_socket_to_list(&this->pfds, new_fd, POLLIN, 0);
+			this->clients.push_back(*new_client);
+			std::string reply = this->reply("001", new_client->get_nick(), "Welcome to the Internet Relay Chat Network " + this->address);
+			send(new_client->get_fd(), reply.c_str(), reply.length() + 1, SOCK_STREAM);
+			std::cout << "pollserver: new connection :" + new_client->get_nick() << std::endl;
+		}
+		else
+			delete new_client;
 	}
 	else
 	{
-		std::cout << "Wrong password" << std::endl;
+		std::string reply = this->reply("433", new_client->get_nick(), "Nickname already in use.");
+		send(new_client->get_fd(), reply.c_str(), reply.length() + 1, SOCK_STREAM);
+		delete new_client;
 	}
 	memset(this->buf, 0, 1000);
 }
 
 void	Server::handle_command(std::list<pollfd>::iterator it)
 {
-	memset(this->buf, 0, 1000);
-	int	nbytes = recv(it->fd, this->buf, 10, 0);
-	std::string	cpy(this->buf);
-	std::cout << "------CMD PACKET------\n" + cpy  + "\n----------------------" << std::endl;
+	int	nbytes = recv(it->fd, buf, 1000, 0);
+	std::string	cpy(buf);
+	std::cout << "from user: " << it->fd << "\n------CMD PACKET------\n" + cpy  + "\n----------------------" << std::endl;
 }
 
 
@@ -200,10 +202,24 @@ std::string	Server::reply(std::string reply_code, std::string target, std::strin
 	return (":" + this->address + " " + reply_code + " " + target + " :" + msg + "\r\n");
 }
 
+int		Server::check_nicknames(std::string nick)
+{
+	std::list<Client>::iterator i = this->clients.begin();
+	while (i != this->clients.end())
+	{
+		std::cout << i->get_nick() << std::endl;
+		if (!i->get_nick().compare(nick))
+			return (1);
+		i++;
+	}
+	return (0);
+}
+
 /*
 ** --------------------------------- ACCESSOR ---------------------------------
 */
 
 std::string		Server::get_password() { return ( this->password ); }
+std::list<Client>	Server::get_listClient() { return (this->clients); }
 
 /* ************************************************************************** */
