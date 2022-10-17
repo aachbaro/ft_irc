@@ -36,10 +36,10 @@ class Client
 	std::string			get_mode();
 	std::string			get_unused();
 	std::string			get_realname();
-	void				set_nick(std::string nickname);
 	char				*get_buf();
-
 	int					get_fd();
+
+	void				set_nick(const std::string nickname);
 
 	private:
 

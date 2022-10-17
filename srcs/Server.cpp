@@ -123,7 +123,7 @@ void	Server::poll_loop()
 
 		while (it != itend)
 		{
-			std::cout << it->get_nick();
+			std::cout << it->get_nick() << std::endl;
 			it++;
 		}
 		std::cout << "polling fds..." << std::endl;
@@ -163,28 +163,26 @@ void	Server::handle_new_connection()
 	struct sockaddr_storage	remote_addr;
 	socklen_t addr_size = sizeof(remote_addr);
 	int new_fd = accept(this->listener, (struct sockaddr *)&remote_addr, &addr_size);
-	Client		*new_client = new Client(new_fd);
+	Client		new_client(new_fd);
 
-	new_client->connection();
-
-	if (!this->check_nicknames(new_client->get_nick()))
+	new_client.connection();
+	if (!this->check_nicknames(new_client.get_nick()))
 	{
-		if (!this->password.compare(new_client->get_pass()))
+		if (!this->password.compare(new_client.get_pass()))
 		{
 			add_socket_to_list(&this->pfds, new_fd, POLLIN, 0);
-			this->clients.push_back(*new_client);
-			std::string reply = this->reply("001", new_client->get_nick(), "Welcome to the Internet Relay Chat Network " + this->address);
-			send(new_client->get_fd(), reply.c_str(), reply.length() + 1, SOCK_STREAM);
-			std::cout << "pollserver: new connection :" + new_client->get_nick() << std::endl;
+			this->clients.push_back(new_client);
+			std::string reply = this->reply("001", new_client.get_nick(), "Welcome to the Internet Relay Chat Network " + this->address);
+			send(new_client.get_fd(), reply.c_str(), reply.length() + 1, SOCK_STREAM);
+			std::cout << "pollserver: new connection :" + new_client.get_nick() << std::endl;
 		}
 		else
-			delete new_client;
+			std::cout << "Wrong password" << std::endl;
 	}
 	else
 	{
-		std::string reply = this->reply("433", new_client->get_nick(), "Nickname already in use.");
-		send(new_client->get_fd(), reply.c_str(), reply.length() + 1, SOCK_STREAM);
-		delete new_client;
+		std::string reply = this->reply("433", new_client.get_nick(), "Nickname already in use.");
+		send(new_client.get_fd(), reply.c_str(), reply.length() + 1, SOCK_STREAM);
 	}
 	memset(this->buf, 0, 1000);
 }
@@ -193,7 +191,7 @@ void	Server::handle_command(std::list<pollfd>::iterator it)
 {
 	int	nbytes = recv(it->fd, buf, 1000, 0);
 	std::string	cpy(buf);
-	std::cout << "from user: " << it->fd << "\n------CMD PACKET------\n" + cpy  + "\n----------------------" << std::endl;
+	std::cout << "from user: " << findClient(it->fd).get_nick() << "\n------CMD PACKET------\n" + cpy  + "\n----------------------" << std::endl;
 }
 
 
@@ -207,12 +205,25 @@ int		Server::check_nicknames(std::string nick)
 	std::list<Client>::iterator i = this->clients.begin();
 	while (i != this->clients.end())
 	{
-		std::cout << i->get_nick() << std::endl;
+		std::cout << "wtf" << i->get_nick() << std::endl;
 		if (!i->get_nick().compare(nick))
 			return (1);
 		i++;
 	}
 	return (0);
+}
+
+Client	Server::findClient(int fd)
+{
+	std::list<Client>::iterator i = clients.begin();
+
+
+	while (i != clients.end())
+	{
+		if (i->get_fd() == fd)
+			return (*i);
+	}
+	return (*clients.begin());
 }
 
 /*

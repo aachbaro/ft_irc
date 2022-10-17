@@ -36,6 +36,7 @@ class Server
 		std::string		reply(std::string reply_code, std::string target,std::string msg);
 		int				complete_command();
 		int				check_nicknames(std::string nick);
+		Client			findClient(int fd);
 		
 		/* accessors */
 		std::string		get_password();

@@ -10,6 +10,15 @@ Client::Client(int fd) : fd(fd)
 
 Client::Client( const Client & src )
 {
+	nick = src.nick;
+	user = src.user;
+	mode = src.mode;
+	unused = src.unused;
+	realname = src.realname;
+	pass = src.pass;
+	fd = src.fd;
+	save = src.save;
+	cmd = src.cmd;
 }
 
 
@@ -72,8 +81,10 @@ void	Client::connection()
 	{
 		if (this->save.empty())
 			recv(fd, buf, 1000, 0);
+		std::cout << buf << std::endl;
 		if (!complete_command())
 			handle_new_entry(this->cmd);
+		memset(buf, 0, 1000);
 	}
 }
 
@@ -82,6 +93,21 @@ int		Client::complete_command()
 	std::string cpy(this->buf);
 
 	this->save += cpy;
+
+	int	i = 0;
+	int	is_empty = 1;
+	char *tmp = strdup(save.c_str());
+	while (tmp[i])
+	{
+		if (isprint(tmp[i]))
+			is_empty = 0;
+		i++;
+	}
+	if (is_empty == 1)
+	{
+		this->save.clear();
+		return (1);
+	}
 	if (this->save.find("\r") != -1)
 	{
 		this->cmd = this->save.substr(0, this->save.find("\r"));
@@ -89,7 +115,10 @@ int		Client::complete_command()
 		return (0); 
 	}
 	else
+	{
+		std::cout << "Save :" + save;
 		return (1);
+	}
 }
 
 /*
@@ -105,7 +134,7 @@ std::string		Client::get_realname() {return (this->realname); }
 char			*Client::get_buf() {return (this->buf); }
 int				Client::get_fd() {return (this->fd); }
 
-void			Client::set_nick(std::string nickname) {this->nick = nickname; }
+void			Client::set_nick(const std::string nickname) {this->nick = nickname; }
 
 
 /* ************************************************************************** */
