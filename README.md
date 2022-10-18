@@ -10,3 +10,40 @@ Le but va etre ensuite de gerer les differentes commandes envoyer par le client 
 - Set un utilsateur en operateur (MODE)
 - Des commandes specifique qux operqteurs (KICK, DIE etc..)
 Une fois les commandes implementees on pourra clore le projet en implementant la gestion d'erreur, et theoriquement on a fini
+
+
+list des commandes presente sur le github d'un mec qui a fini, y en a pas mal qui sont pas obligatoire mais on verra lesauelles on fait au fur et a mesure:
+away
+die
+info
+invite
+join
+kick
+kill
+list
+lusers
+mode
+motd
+names
+nick
+notice
+oper
+part
+pass
+pingpong
+privmsg
+quit
+rehash
+restart
+service
+servlist
+squery
+stats
+time
+topic
+user
+userhost
+version
+who
+whois
+whowas
