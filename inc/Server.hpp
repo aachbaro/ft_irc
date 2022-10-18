@@ -31,7 +31,7 @@ class Server
 		void			polling();
 		void			handle_pfds();
 		void			handle_new_connection();
-		void			handle_command(std::list<pollfd>::iterator it, std::list<Client>::iterator itclient);
+		void			handle_command(std::list<Client>::iterator itclient);
 		void			add_socket_to_list(std::list<pollfd> *pfds, int filed, short ev, short rev);
 		std::string		reply(std::string reply_code, std::string target,std::string msg);
 		int				complete_command();

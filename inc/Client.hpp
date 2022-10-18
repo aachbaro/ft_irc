@@ -28,6 +28,7 @@ class Client
 	void				handle_new_entry(std::string str);
 	int					complete_command();
 	void				connection();
+	void				get_fullcmd();
 
 	std::string			get_cap();
 	std::string			get_nick();
@@ -38,6 +39,7 @@ class Client
 	std::string			get_realname();
 	char				*get_buf();
 	int					get_fd();
+	std::string			get_cmd();
 
 	void				set_nick(const std::string nickname);
 

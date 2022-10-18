@@ -88,26 +88,21 @@ void	Client::connection()
 	}
 }
 
+void	Client::get_fullcmd()
+{
+	memset(buf, 0, 1000);
+	while (complete_command())
+	{
+		memset(buf, 0, 1000);
+		recv(fd, buf, 10, 0);
+	}
+}
+
 int		Client::complete_command()
 {
 	std::string cpy(this->buf);
 
 	this->save += cpy;
-
-	int	i = 0;
-	int	is_empty = 1;
-	char *tmp = strdup(save.c_str());
-	while (tmp[i])
-	{
-		if (isprint(tmp[i]))
-			is_empty = 0;
-		i++;
-	}
-	if (is_empty == 1)
-	{
-		this->save.clear();
-		return (1);
-	}
 	if (this->save.find("\r") != -1)
 	{
 		this->cmd = this->save.substr(0, this->save.find("\r"));
@@ -115,10 +110,7 @@ int		Client::complete_command()
 		return (0); 
 	}
 	else
-	{
-		std::cout << "Save :" + save;
 		return (1);
-	}
 }
 
 /*
@@ -133,6 +125,7 @@ std::string		Client::get_unused() {return (this->unused); }
 std::string		Client::get_realname() {return (this->realname); }
 char			*Client::get_buf() {return (this->buf); }
 int				Client::get_fd() {return (this->fd); }
+std::string		Client::get_cmd() {return (this->cmd); }
 
 void			Client::set_nick(const std::string nickname) {this->nick = nickname; }
 
