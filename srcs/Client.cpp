@@ -79,9 +79,9 @@ void	Client::connection()
 {
 	while (this->nick.empty() || pass.empty() || user.empty())
 	{
+		memset(buf, 0, 1000);
 		if (this->save.empty())
 			recv(fd, buf, 1000, 0);
-		std::cout << buf << std::endl;
 		if (!complete_command())
 			handle_new_entry(this->cmd);
 		memset(buf, 0, 1000);

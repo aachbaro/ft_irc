@@ -136,6 +136,7 @@ void	Server::polling()
 {
 	this->arr_pfds = (pollfd *)malloc(sizeof(this->arr_pfds) * sizeof(this->pfds.size()));
 	std::copy(this->pfds.begin(), this->pfds.end(), this->arr_pfds);
+	std::cout << "pfds : " << pfds.size() << std::endl;
 	poll(this->arr_pfds, this->pfds.size(), -1);
 	std::copy(this->arr_pfds, this->arr_pfds + this->pfds.size(), this->pfds.begin());
 }
@@ -143,6 +144,7 @@ void	Server::polling()
 void	Server::handle_pfds()
 {
 	std::list<pollfd>::iterator it;
+	std::list<Client>::iterator itclient = clients.begin();
 	std::list<pollfd>::iterator itend;
 
 	itend = this->pfds.end();
@@ -153,8 +155,10 @@ void	Server::handle_pfds()
 			if (it->fd == this->listener)
 				this->handle_new_connection();
 			else
-				this->handle_command(it);
+				this->handle_command(it, itclient);
 		}
+		if (it != pfds.begin())
+			itclient++;
 	}
 }
 
@@ -181,17 +185,17 @@ void	Server::handle_new_connection()
 	}
 	else
 	{
-		std::string reply = this->reply("433", new_client.get_nick(), "Nickname already in use.");
+		std::string reply = this->reply("433", new_client.get_nick(), "Nickname already in use");
+		std::cout << reply << std::endl;
 		send(new_client.get_fd(), reply.c_str(), reply.length() + 1, SOCK_STREAM);
 	}
-	memset(this->buf, 0, 1000);
 }
 
-void	Server::handle_command(std::list<pollfd>::iterator it)
+void	Server::handle_command(std::list<pollfd>::iterator it, std::list<Client>::iterator itclient)
 {
-	int	nbytes = recv(it->fd, buf, 1000, 0);
-	std::string	cpy(buf);
-	std::cout << "from user: " << findClient(it->fd).get_nick() << "\n------CMD PACKET------\n" + cpy  + "\n----------------------" << std::endl;
+	int	nbytes = recv(it->fd, itclient->get_buf(), 1000, 0);
+	std::string	cpy(itclient->get_buf());
+	std::cout << "from user: " << itclient->get_nick() << "\n------CMD PACKET------\n" + cpy  + "\n----------------------" << std::endl;
 }
 
 
