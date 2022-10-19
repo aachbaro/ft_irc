@@ -47,3 +47,8 @@ version
 who
 whois
 whowas
+
+  
+  TACHES
+  - ajouter les reponses du serveur au client en cas de join, tel que:
+  ![image](https://user-images.githubusercontent.com/71929000/196733919-264eaf03-7617-4ba3-bcc9-6531a56ba8dc.png)
