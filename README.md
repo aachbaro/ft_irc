@@ -2,7 +2,7 @@
 
 
 Tu peux tester avec le client irssi, juste a lancer irssi dans le terminal puis tu te connect au serveur avec 
-/connect 127.0.0.1 6667 <password> <nickname>
+/connect 127.0.0.1 6667 password nickname 
 
 Le serveur est setup et accepte de ouvelle connection, ajoute le nouveau client a son repertoire puis recois les commandes de chacun de ses clients,
 Les commandes sont formater avec le mot cle au debut suivit des parametre (ex: "NICK <nickname>" definit le surnom). Le serveur repond ensuite
