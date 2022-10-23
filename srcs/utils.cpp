@@ -29,8 +29,10 @@ void Server::redirect_cmd(std::list<Client>::iterator itclient) {
     if (this->cmd == "JOIN") {
         join_or_create_channel(*(args.begin()), itclient);
     }
+    if (this->cmd == "PING") {
+        pong_reply(*(args.begin()), *itclient);
+    }
 }
-
 
 void Server::clear_args() {
     this->args.clear();

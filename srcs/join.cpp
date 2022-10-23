@@ -12,11 +12,13 @@ void Server::join_or_create_channel(std::string name, std::list<Client>::iterato
     for (; it != ite; ++it) {
         if (it->get_name() == name) {
             it->add_client(*itclient);
-            // send_to_client(*itclient, itclient->get_nick() + " has joined #" + name);
+            std::string msg = generate_reply("001", itclient->get_nick(), itclient->get_nick() + " has joined the channel #" + name);
+            send_to_client(*itclient, msg);
             return ;
         }
     }
     Channel new_channel(name, *itclient);
     _channels.push_back(new_channel);
-    // send_to_client(*itclient, itclient->get_nick() + " has joined #" + name);
+    std::string msg = generate_reply("001", itclient->get_nick(), itclient->get_nick() + " has joined the channel #" + name);
+    send_to_client(*itclient, msg);
 }

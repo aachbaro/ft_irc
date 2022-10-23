@@ -62,11 +62,13 @@ class Server
 
 		void		parse_cmd(std::string command, std::list<Client>::iterator itclient);
 		void 		redirect_cmd(std::list<Client>::iterator itclient);
-		void		join_or_create_channel(std::string name, std::list<Client>::iterator itclient);
 		void		clear_args();
 		void 		send_to_client(Client client, std::string msg);
 		void 		send_welcome_msg(Client client);
-		std::string generate_message(std::string code, std::string target, std::string msg);
+		std::string generate_reply(std::string code, std::string target, std::string msg);
+
+		void		join_or_create_channel(std::string name, std::list<Client>::iterator itclient);
+		void		pong_reply(std::string to, Client client);
 };
 
 std::ostream &			operator<<( std::ostream & o, Server const & i );

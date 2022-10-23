@@ -9,7 +9,8 @@ SRCS		= srcs/main.cpp \
 				srcs/join.cpp \
 				srcs/message.cpp \
 				srcs/sender.cpp \
-				srcs/utils.cpp
+				srcs/utils.cpp \
+				srcs/pong.cpp
 
 CC			= c++
 CFLAGS		= #-Wall -Wextra -Werror -std=c++98
