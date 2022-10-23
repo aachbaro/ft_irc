@@ -115,8 +115,7 @@ void	Server::handle_new_connection()
 		{
 			add_socket_to_list(&this->pfds, new_fd, POLLIN, 0);
 			this->clients.push_back(new_client);
-			std::string reply = this->reply("001", new_client.get_nick(), "Welcome to the Internet Relay Chat Network " + this->address);
-			send(new_client.get_fd(), reply.c_str(), reply.length() + 1, SOCK_STREAM);
+			send_welcome_msg(new_client);
 			std::cout << "pollserver: new connection :" + new_client.get_nick() << std::endl;
 		}
 		else
@@ -133,7 +132,10 @@ void	Server::handle_new_connection()
 void	Server::handle_command(std::list<Client>::iterator itclient)
 {
 	itclient->get_fullcmd();
-	std::cout << "from user: " << itclient->get_nick() << "\n------CMD PACKET------\n" + itclient->get_cmd() + "\n----------------------" << std::endl;
+	std::string cmd = itclient->get_cmd();
+	std::cout << "from user: " << itclient->get_nick() << "\n------CMD PACKET------\n" + cmd + "\n----------------------" << std::endl;
+	parse_cmd(cmd, itclient);
+	redirect_cmd(itclient);
 	itclient->get_cmd().clear();
 }
 
@@ -186,7 +188,7 @@ void	Server::set_listener_sock(void)
 		std::cerr << "getaddrinfo error: " << gai_strerror(status) << std::endl;
 		exit(EXIT_FAILURE);
 	}
-	
+
 	for (p = servinfo; p != NULL; p = p->ai_next) {
 		listener = socket(servinfo->ai_family, servinfo->ai_socktype, servinfo->ai_protocol);
 		if (listener < 0)

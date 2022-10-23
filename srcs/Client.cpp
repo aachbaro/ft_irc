@@ -107,7 +107,7 @@ int		Client::complete_command()
 	{
 		this->cmd = this->save.substr(0, this->save.find("\r"));
 		this->save = this->save.substr(this->save.find("\n") + 1);
-		return (0); 
+		return (0);
 	}
 	else
 		return (1);

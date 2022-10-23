@@ -4,7 +4,13 @@ OBJSDIR		= objs
 INCLUDES	= .
 SRCS		= srcs/main.cpp \
 				srcs/Server.cpp \
-				srcs/Client.cpp
+				srcs/Client.cpp \
+				srcs/Channel.cpp \
+				srcs/join.cpp \
+				srcs/message.cpp \
+				srcs/sender.cpp \
+				srcs/utils.cpp
+
 CC			= c++
 CFLAGS		= #-Wall -Wextra -Werror -std=c++98
 
