@@ -123,9 +123,8 @@ void	Server::handle_new_connection()
 	}
 	else
 	{
-		std::string reply = this->reply("433", new_client.get_nick(), "Nickname already in use");
-		std::cout << reply << std::endl;
-		send(new_client.get_fd(), reply.c_str(), reply.length() + 1, SOCK_STREAM);
+        std::string msg = generate_reply("433", new_client.get_nick(), new_client.get_nick());
+        send_to_client(new_client, msg);
 	}
 }
 

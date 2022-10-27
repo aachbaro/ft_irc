@@ -34,6 +34,8 @@ void Server::redirect_cmd(std::vector<std::string> parsed, std::list<Client>::it
     }
     if (*first == "PRIVMSG") {
         send_prvmsg(*(first + 1), first + 2, parsed.end(), *itclient);
+    if (this->cmd == "NICK") {
+        set_or_change_nick(*(args.begin()), itclient);
     }
 }
 

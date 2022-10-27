@@ -56,7 +56,6 @@ class Client
 	std::string			save;
 	std::string			cmd;
 
-
 };
 
 std::ostream &			operator<<( std::ostream & o, Client const & i );
