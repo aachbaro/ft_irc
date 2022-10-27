@@ -134,8 +134,8 @@ void	Server::handle_command(std::list<Client>::iterator itclient)
 	itclient->get_fullcmd();
 	std::string cmd = itclient->get_cmd();
 	std::cout << "from user: " << itclient->get_nick() << "\n------CMD PACKET------\n" + cmd + "\n----------------------" << std::endl;
-	parse_cmd(cmd, itclient);
-	redirect_cmd(itclient);
+	std::vector<std::string> parsed = parse_cmd(cmd, itclient);
+	redirect_cmd(parsed, itclient);
 	itclient->get_cmd().clear();
 }
 

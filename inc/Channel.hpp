@@ -10,7 +10,7 @@ class Channel {
     public:
         Channel();
         Channel(std::string name);
-        Channel(std::string name, Client client);
+        Channel(std::string name, Client client, std::string topic);
         ~Channel();
 
         Channel & operator=( Channel const & rhs );
@@ -19,10 +19,13 @@ class Channel {
         std::vector<Client> get_clients();
 
         int add_client(Client client);
+        void send(std::string msg, Client client);
+        void names(Client client);
 
     private:
         std::string _name;
         std::vector<Client> _clients;
+        std::string _topic;
 };
 
 #endif

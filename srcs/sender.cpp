@@ -1,7 +1,7 @@
 #include "../inc/Server.hpp"
 
 void Server::send_to_client(Client client, std::string msg) {
-    send(client.get_fd(), msg.c_str(), msg.length() + 1, MSG_NOSIGNAL);
+    send(client.get_fd(), msg.c_str(), msg.length() + 1, SOCK_STREAM);
 }
 
 void Server::send_welcome_msg(Client client) {

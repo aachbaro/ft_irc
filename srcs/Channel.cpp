@@ -1,8 +1,9 @@
 #include "../inc/Channel.hpp"
+#include "../inc/Server.hpp"
 
 Channel::Channel() {}
 Channel::Channel(std::string name): _name(name), _clients() {}
-Channel::Channel(std::string name, Client client): _name(name) {
+Channel::Channel(std::string name, Client client, std::string topic): _name(name), _topic(topic) {
     /*
         Constructor with client
         - Add client in Channel
@@ -44,4 +45,28 @@ int Channel::add_client(Client client) {
 
     this->_clients.push_back(client);
     return 1;
+}
+
+void Channel::send(std::string msg, Client client) {
+    std::vector<Client>::iterator it = _clients.begin();
+    std::vector<Client>::iterator ite = _clients.end();
+    for (; it != ite; ++it) {
+        Server::send_to_client(*it, msg);
+    }
+}
+
+void  Channel::names(Client client) {
+    std::vector<Client>::iterator it = _clients.begin();
+    std::vector<Client>::iterator ite = _clients.end();
+    std::string clients = "";
+    for (; it != ite; ++it) {
+        clients += it->get_nick();
+    }
+    std::string msg = ":127.0.0.1 353 " + client.get_nick() + " = " + this->get_name() + " :" + client.get_nick() + "\r\n";
+    Server::send_to_client(client, msg);
+    std::cout << "MSG1 + len: " << msg << msg.length() << std::endl;
+    msg.clear();
+    msg = ":127.0.0.1 366 " + client.get_nick() + " " + this->get_name() + " :End of NAMES list\r\n";
+    std::cout << "MSG2 + len: " << msg << msg.length() << std::endl;
+    Server::send_to_client(client, msg);
 }

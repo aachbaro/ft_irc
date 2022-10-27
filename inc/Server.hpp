@@ -45,6 +45,9 @@ class Server
 		/* accessors */
 		std::string		get_password();
 		std::list<Client> get_listClient();
+		static void send_to_client(Client client, std::string msg);
+		void names(Client client);
+		std::string 				generate_reply(std::string code, std::string target, std::string msg);
 
 
 	private:
@@ -60,15 +63,13 @@ class Server
 		std::list<Client>	clients;
 		std::vector<Channel> _channels;
 
-		void		parse_cmd(std::string command, std::list<Client>::iterator itclient);
-		void 		redirect_cmd(std::list<Client>::iterator itclient);
-		void		clear_args();
-		void 		send_to_client(Client client, std::string msg);
-		void 		send_welcome_msg(Client client);
-		std::string generate_reply(std::string code, std::string target, std::string msg);
+		std::vector<std::string>	parse_cmd(std::string command, std::list<Client>::iterator itclient);
+		void 						redirect_cmd(std::vector<std::string> parsed, std::list<Client>::iterator itclient);
+		void						clear_args();
+		void 						send_welcome_msg(Client client);
 
-		void		join_or_create_channel(std::string name, std::list<Client>::iterator itclient);
-		void		pong_reply(std::string to, Client client);
+		void						join_or_create_channel(std::string name, std::string topic, std::list<Client>::iterator itclient);
+		void						pong_reply(std::string to, Client client);
 };
 
 std::ostream &			operator<<( std::ostream & o, Server const & i );
