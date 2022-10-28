@@ -14,7 +14,7 @@ void Server::join_or_create_channel(std::string name, std::string topic, std::li
             it->add_client(*itclient);
             std::string msg = ":" + itclient->get_nick() + " JOIN " + name + "\r\n";
             it->send(msg, *itclient);
-            it->names(*itclient);
+            // it->names(*itclient);
             return ;
         }
     }
@@ -22,8 +22,8 @@ void Server::join_or_create_channel(std::string name, std::string topic, std::li
     _channels.push_back(new_channel);
     std::string msg = ":" + itclient->get_nick() + " JOIN " + name + "\r\n";
     new_channel.send(msg, *itclient);
-    new_channel.names(*itclient);
-    std::string msg_topic = ":127.0.0.1 332 " + itclient->get_nick() + " " + new_channel.get_name() + " :" + topic;
-    std::cout << "MSG TOPIC: " << msg_topic << std::endl;
-    send_to_client(*itclient, msg_topic);
+    // std::string msg_topic = ":127.0.0.1 332 " + itclient->get_nick() + " " + new_channel.get_name() + " :" + topic + "\r\n";
+    // std::cout << "MSG TOPIC: " << msg_topic << std::endl;
+    // send_to_client(*itclient, msg_topic);
+    // new_channel.names(*itclient);
 }

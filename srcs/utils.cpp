@@ -25,7 +25,10 @@ void Server::redirect_cmd(std::vector<std::string> parsed, std::list<Client>::it
         return ;
     std::vector<std::string>::iterator first = parsed.begin();
     if (*first == "JOIN") {
-        join_or_create_channel(*(first + 1), *(first + 2), itclient);
+        if (parsed.size() > 2)
+            join_or_create_channel(*(first + 1), *(first + 2), itclient);
+        else if (parsed.size() > 0)
+            join_or_create_channel(*(first + 1), "", itclient);
     }
     if (*first == "PING") {
         pong_reply(*(first + 1), *itclient);
