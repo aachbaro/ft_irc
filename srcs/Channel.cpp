@@ -64,9 +64,7 @@ void  Channel::names(Client client) {
     }
     std::string msg = ":127.0.0.1 353 " + client.get_nick() + " = " + this->get_name() + " :" + client.get_nick() + "\r\n";
     Server::send_to_client(client, msg);
-    std::cout << "MSG1 + len: " << msg << msg.length() << std::endl;
     msg.clear();
     msg = ":127.0.0.1 366 " + client.get_nick() + " " + this->get_name() + " :End of NAMES list\r\n";
-    std::cout << "MSG2 + len: " << msg << msg.length() << std::endl;
     Server::send_to_client(client, msg);
 }
