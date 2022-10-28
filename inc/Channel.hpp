@@ -19,8 +19,9 @@ class Channel {
         std::vector<Client> get_clients();
 
         int add_client(Client client);
-        void send(std::string msg, Client client);
+        void send(std::string msg, Client client, bool send_to_same);
         void names(Client client);
+        std::string get_topic();
 
     private:
         std::string _name;

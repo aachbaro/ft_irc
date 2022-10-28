@@ -13,7 +13,6 @@ std::vector<std::string> Server::parse_cmd(std::string command, std::list<Client
         parsed.push_back(word);
         command.erase(0, pos + 1);
     }
-    // this->args.push_back(command);
     if (command.length() > 0)
         parsed.push_back(command);
     return parsed;
@@ -32,6 +31,9 @@ void Server::redirect_cmd(std::vector<std::string> parsed, std::list<Client>::it
     }
     if (*first == "PING") {
         pong_reply(*(first + 1), *itclient);
+    }
+    if (*first == "PRIVMSG") {
+        send_prvmsg(*(first + 1), first + 2, parsed.end(), *itclient);
     }
 }
 

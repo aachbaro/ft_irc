@@ -236,6 +236,18 @@ void	Server::add_socket_to_list(std::list<pollfd> *pfds, int filed, short ev, sh
 	pfds->push_back(tmp);
 }
 
+Client Server::find_client_by_nick(std::string nick) {
+	std::list<Client>::iterator it = clients.begin();
+	std::list<Client>::iterator ite = clients.end();
+
+	for (; it != ite; ++it) {
+		if (it->get_nick() == nick)
+			return *it;
+	}
+
+	return NULL;
+}
+
 
 /*
 ** --------------------------------- ACCESSOR ---------------------------------

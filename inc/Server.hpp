@@ -48,7 +48,9 @@ class Server
 		static void send_to_client(Client client, std::string msg);
 		void names(Client client);
 		std::string 				generate_reply(std::string code, std::string target, std::string msg);
-
+		void send_prvmsg(std::string target, std::vector<std::string>::iterator it, std::vector<std::string>::iterator ite, Client client);
+		void names(std::vector<std::string>::iterator it, std::vector<std::string>::iterator ite, Client client);
+		Client find_client_by_nick(std::string nick);
 
 	private:
 
