@@ -11,7 +11,8 @@ SRCS		= srcs/main.cpp \
 				srcs/sender.cpp \
 				srcs/utils.cpp \
 				srcs/pong.cpp \
-				srcs/prvmsg.cpp
+				srcs/prvmsg.cpp \
+				srcs/nick.cpp
 
 CC			= c++
 CFLAGS		= #-Wall -Wextra -Werror -std=c++98

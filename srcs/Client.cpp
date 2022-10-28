@@ -94,7 +94,7 @@ void	Client::get_fullcmd()
 	while (complete_command())
 	{
 		memset(buf, 0, 1000);
-		recv(fd, buf, 10, 0);
+		recv(fd, buf, 1000, 0);
 	}
 }
 
@@ -107,10 +107,14 @@ int		Client::complete_command()
 	{
 		this->cmd = this->save.substr(0, this->save.find("\r"));
 		this->save = this->save.substr(this->save.find("\n") + 1);
+		memset(buf, 0, 1000);
 		return (0);
 	}
 	else
+	{
+		memset(buf, 0, 1000);
 		return (1);
+	}
 }
 
 /*

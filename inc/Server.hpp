@@ -72,6 +72,7 @@ class Server
 
 		void						join_or_create_channel(std::string name, std::string topic, std::list<Client>::iterator itclient);
 		void						pong_reply(std::string to, Client client);
+		void		set_or_change_nick(const std::string new_nickname, std::list<Client>::iterator itclient);
 };
 
 std::ostream &			operator<<( std::ostream & o, Server const & i );

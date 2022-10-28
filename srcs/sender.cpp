@@ -1,9 +1,7 @@
 #include "../inc/Server.hpp"
 
 void Server::send_to_client(Client client, std::string msg) {
-    int ret = send(client.get_fd(), msg.c_str(), msg.size(), MSG_DONTWAIT);
-    if (ret == -1)
-        std::cout << "ERROR SENT" << std::endl;
+    send(client.get_fd(), msg.c_str(), msg.size(), MSG_DONTWAIT);
 }
 
 void Server::send_welcome_msg(Client client) {
