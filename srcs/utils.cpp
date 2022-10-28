@@ -34,11 +34,14 @@ void Server::redirect_cmd(std::vector<std::string> parsed, std::list<Client>::it
     }
     if (*first == "PRIVMSG") {
         send_prvmsg(*(first + 1), first + 2, parsed.end(), *itclient);
-    if (this->cmd == "NICK") {
-        set_or_change_nick(*(args.begin()), itclient);
     }
-}
-
-void Server::clear_args() {
-    this->args.clear();
+    if (*first == "NICK") {
+        if (parsed.size() == 1 || (first + 1)->empty())
+        {
+            std::string msg = generate_reply("431", "", "No nickname given");
+            send_to_client(*itclient, msg);
+		    return ;
+        }
+        set_or_change_nick(*(first + 1), itclient);
+    }
 }

@@ -109,6 +109,27 @@ void	Server::handle_new_connection()
 	Client		new_client(new_fd);
 
 	new_client.connection();
+    const char  *cpy = new_client.get_nick().c_str();
+    std::string allowed_char("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefhijklmnopqrstuvwxyz0123456789`|^_-{}[]\\");
+    int        i(0);
+
+	
+    if (new_client.get_nick().length() > 20)
+    {
+        std::string msg = generate_reply("", new_client.get_nick(), new_client.get_nick() + " Nickname too long, max. 20 characters");
+        send_to_client(new_client, msg);
+		return ;
+    }
+    while (cpy[i])
+    {
+        if (allowed_char.find(cpy[i]) == -1)
+        {
+            std::string msg = generate_reply("432", new_client.get_nick(), "Erroneous nickname");
+            send_to_client(new_client, msg);
+            return ;
+        }
+        i++;
+    }
 	if (!this->check_nicknames(new_client.get_nick()))
 	{
 		if (!this->password.compare(new_client.get_pass()))

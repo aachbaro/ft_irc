@@ -94,7 +94,7 @@ void	Client::get_fullcmd()
 	while (complete_command())
 	{
 		memset(buf, 0, 1000);
-		recv(fd, buf, 10, 0);
+		recv(fd, buf, 1000, 0);
 	}
 }
 
