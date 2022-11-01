@@ -44,4 +44,14 @@ void Server::redirect_cmd(std::vector<std::string> parsed, std::list<Client>::it
         }
         set_or_change_nick(*(first + 1), itclient);
     }
+    if (*first == "MODE")
+    {
+        if (parsed.size() == 3)
+            mode_cmd(*(first + 1), *(first + 2), itclient);
+    }
+    if (*first == "INVITE")
+    {
+        if (parsed.size() == 3)
+            invite(*(first + 2), *(first + 1), itclient);
+    }
 }

@@ -19,6 +19,7 @@ class Client
 
 	public:
 
+		Client();
 		Client(int fd);
 		Client( Client const & src );
 		~Client();

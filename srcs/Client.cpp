@@ -4,6 +4,8 @@
 ** ------------------------------- CONSTRUCTOR --------------------------------
 */
 
+
+Client::Client() {}
 Client::Client(int fd) : fd(fd)
 {
 }
