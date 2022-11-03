@@ -75,6 +75,8 @@ class Server
 		void		set_or_change_nick(const std::string new_nickname, std::list<Client>::iterator itclient);
 		void		invite(std::string channel, std::string client, std::list<Client>::iterator itclient);
 		void		mode_cmd(std::string target, std::string param,std::list<Client>::iterator itclient);
+		void		topic(std::string chan, std::string topic, std::list<Client>::iterator itclient);
+		void		topic(std::string chan, std::list<Client>::iterator itclient);
 };
 
 std::ostream &			operator<<( std::ostream & o, Server const & i );

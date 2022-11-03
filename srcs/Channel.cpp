@@ -88,7 +88,10 @@ std::string Channel::get_topic() {
     return _topic;
 }
 
-Client Channel::get_chanOp() { return (_chanOperator); }
-bool   Channel::getMode() { return (_inviteOnly); }
-void   Channel::addInvited(std::string invited) { _invited.push_back(invited); }
-void   Channel::setMode(bool mode) { _inviteOnly = mode; }
+Client  Channel::get_chanOp() { return (_chanOperator); }
+bool    Channel::getMode() { return (_inviteOnly); }
+bool    Channel::getProtecTopic() { return (_protectedTopic); }
+void    Channel::addInvited(std::string invited) { _invited.push_back(invited); }
+void    Channel::setMode(bool mode) { _inviteOnly = mode; }
+void    Channel::setProtecTopic(bool mode) { _protectedTopic = mode; }
+void    Channel::setTopic(std::string new_topic) { _topic = new_topic; }

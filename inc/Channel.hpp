@@ -18,6 +18,7 @@ class Channel {
         std::string get_name();
         std::vector<Client> get_clients();
         bool                getMode();
+        bool                getProtecTopic();
 
         int add_client(Client client);
         void    set_operator(Client client);
@@ -28,6 +29,8 @@ class Channel {
         void    addInvited(std::string invited);
         bool    isInInvited(std::string nick);
         void    setMode(bool mode);
+        void    setProtecTopic(bool mode);
+        void    setTopic(std::string newtopic);
 
     private:
         std::string _name;
@@ -36,6 +39,7 @@ class Channel {
         std::vector<std::string> _invited;
         std::string _topic;
         bool        _inviteOnly;
+        bool        _protectedTopic;
 };
 
 #endif

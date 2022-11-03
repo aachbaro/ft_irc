@@ -14,7 +14,8 @@ SRCS		= srcs/main.cpp \
 				srcs/prvmsg.cpp \
 				srcs/nick.cpp \
 				srcs/mode.cpp \
-				srcs/invite.cpp
+				srcs/invite.cpp \
+				srcs/topic.cpp
 
 CC			= c++
 CFLAGS		= #-Wall -Wextra -Werror -std=c++98

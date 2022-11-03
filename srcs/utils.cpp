@@ -54,4 +54,10 @@ void Server::redirect_cmd(std::vector<std::string> parsed, std::list<Client>::it
         if (parsed.size() == 3)
             invite(*(first + 2), *(first + 1), itclient);
     }
+    if (*first == "TOPIC")
+    {
+        if (parsed.size() == 3)
+            topic(*(first + 1), *(first + 2), itclient);
+        topic(*(first + 1), itclient);
+    }
 }
