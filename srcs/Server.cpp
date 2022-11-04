@@ -4,7 +4,7 @@
 ** ------------------------------- CONSTRUCTOR --------------------------------
 */
 
-Server::Server(std::string pword, std::string given_port) : password(pword), port(given_port)
+Server::Server(std::string pword, std::string given_port) : password(pword), port(given_port), start(time(0))
 {
 	this->address = "127.0.0.1";
 }

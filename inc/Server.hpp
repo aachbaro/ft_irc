@@ -14,6 +14,7 @@
 # include <unistd.h>
 # include <fcntl.h>
 # include <vector>
+# include <ctime>
 # include "Client.hpp"
 # include "Channel.hpp"
 
@@ -64,6 +65,7 @@ class Server
 		int					listener;
 		std::list<Client>	clients;
 		std::vector<Channel> _channels;
+		time_t				start;
 
 		std::vector<std::string>	parse_cmd(std::string command, std::list<Client>::iterator itclient);
 		void 						redirect_cmd(std::vector<std::string> parsed, std::list<Client>::iterator itclient);
