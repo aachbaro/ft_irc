@@ -24,10 +24,12 @@ void Server::redirect_cmd(std::vector<std::string> parsed, std::list<Client>::it
         return ;
     std::vector<std::string>::iterator first = parsed.begin();
     if (*first == "JOIN") {
-        if (parsed.size() > 2)
-            join_or_create_channel(*(first + 1), *(first + 2), itclient);
-        else if (parsed.size() > 0)
-            join_or_create_channel(*(first + 1), "", itclient);
+        if (parsed.size() <= 1)
+            send_to_client(*itclient, ":" + itclient->get_nick() + " JOIN :Not enough parameters\r\n");
+        std::vector<std::string> channels = get_join_args(*(first + 1));
+        for (int i = 0; i < channels.size(); i++) {
+            join_or_create_channel(channels[i], itclient);
+        }
     }
     if (*first == "PING") {
         pong_reply(*(first + 1), *itclient);

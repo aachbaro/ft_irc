@@ -10,7 +10,7 @@ class Channel {
     public:
         Channel();
         Channel(std::string name);
-        Channel(std::string name, Client client, std::string topic);
+        Channel(std::string name, Client client);
         ~Channel();
 
         Channel & operator=( Channel const & rhs );

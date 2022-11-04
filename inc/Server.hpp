@@ -70,13 +70,14 @@ class Server
 		void						clear_args();
 		void 						send_welcome_msg(Client client);
 
-		void						join_or_create_channel(std::string name, std::string topic, std::list<Client>::iterator itclient);
+		void						join_or_create_channel(std::string name, std::list<Client>::iterator itclient);
 		void						pong_reply(std::string to, Client client);
 		void		set_or_change_nick(const std::string new_nickname, std::list<Client>::iterator itclient);
 		void		invite(std::string channel, std::string client, std::list<Client>::iterator itclient);
 		void		mode_cmd(std::string target, std::string param,std::list<Client>::iterator itclient);
 		void		topic(std::string chan, std::string topic, std::list<Client>::iterator itclient);
 		void		topic(std::string chan, std::list<Client>::iterator itclient);
+		std::vector<std::string> get_join_args(std::string parsed);
 };
 
 std::ostream &			operator<<( std::ostream & o, Server const & i );

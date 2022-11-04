@@ -1,6 +1,19 @@
 #include "../inc/Server.hpp"
 
-void Server::join_or_create_channel(std::string name, std::string topic, std::list<Client>::iterator itclient) {
+std::vector<std::string> Server::get_join_args(std::string parsed) {
+    std::vector<std::string> channels;
+    size_t pos = 0;
+    while((pos = parsed.find(",")) != std::string::npos) {
+        std::string word = parsed.substr(0, pos);
+        channels.push_back(word);
+        parsed.erase(0, pos + 1);
+    }
+    if (parsed.length() > 0)
+        channels.push_back(parsed);
+    return channels;
+}
+
+void Server::join_or_create_channel(std::string name, std::list<Client>::iterator itclient) {
     /*
         Handle JOIN command.
         - Check if Channel already exists, if so, just add the new client to the channel.
@@ -26,13 +39,9 @@ void Server::join_or_create_channel(std::string name, std::string topic, std::li
             return ;
         }
     }
-    Channel new_channel(name, *itclient, topic);
+    Channel new_channel(name, *itclient);
     _channels.push_back(new_channel);
     std::string msg = ":" + itclient->get_nick() + " JOIN " + name + "\r\n";
     new_channel.send(msg, *itclient, true);
-    if (new_channel.get_topic().length() > 0) {
-        std::string msg_topic = ":127.0.0.1 332 " + itclient->get_nick() + " " + new_channel.get_name() + " :" + new_channel.get_topic() + "\r\n";
-        send_to_client(*itclient, msg_topic);
-    }
     new_channel.names(*itclient);
 }
