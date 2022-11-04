@@ -78,6 +78,8 @@ class Server
 		void		topic(std::string chan, std::string topic, std::list<Client>::iterator itclient);
 		void		topic(std::string chan, std::list<Client>::iterator itclient);
 		std::vector<std::string> get_join_args(std::string parsed);
+		void send_notice(std::string target, std::vector<std::string>::iterator it, std::vector<std::string>::iterator ite, Client client);
+		void part(std::string channel, std::vector<std::string>::iterator it, std::vector<std::string>::iterator ite, Client client);
 };
 
 std::ostream &			operator<<( std::ostream & o, Server const & i );

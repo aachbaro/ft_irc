@@ -31,11 +31,28 @@ void Server::redirect_cmd(std::vector<std::string> parsed, std::list<Client>::it
             join_or_create_channel(channels[i], itclient);
         }
     }
+    if (*first == "PART") {
+        if (parsed.size() <= 1)
+            send_to_client(*itclient, ":" + itclient->get_nick() + " PART :Not enough parameters\r\n");
+        std::vector<std::string> channels = get_join_args(*(first + 1));
+        for (int i = 0; i < channels.size(); i++) {
+            part(channels[i], first + 2, parsed.end(), *itclient);
+        }
+    }
     if (*first == "PING") {
         pong_reply(*(first + 1), *itclient);
     }
     if (*first == "PRIVMSG") {
-        send_prvmsg(*(first + 1), first + 2, parsed.end(), *itclient);
+        std::vector<std::string> targets = get_join_args(*(first + 1));
+        for (int i = 0; i < targets.size(); i++) {
+            send_prvmsg(targets[i], first + 2, parsed.end(), *itclient);
+        }
+    }
+    if (*first == "NOTICE") {
+        std::vector<std::string> targets = get_join_args(*(first + 1));
+        for (int i = 0; i < targets.size(); i++) {
+            send_notice(targets[i], first + 2, parsed.end(), *itclient);
+        }
     }
     if (*first == "NICK") {
         if (parsed.size() == 1 || (first + 1)->empty())

@@ -18,7 +18,7 @@ void Server::join_or_create_channel(std::string name, std::list<Client>::iterato
         Handle JOIN command.
         - Check if Channel already exists, if so, just add the new client to the channel.
         - If channel doesn't exist, create it.
-        - For both cases, send message to client (J'y arrive pas pour l'instant)
+        - For both cases, send message to client
     */
     std::vector<Channel>::iterator it = this->_channels.begin();
     std::vector<Channel>::iterator ite = this->_channels.end();
