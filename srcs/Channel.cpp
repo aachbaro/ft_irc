@@ -1,9 +1,9 @@
 #include "../inc/Channel.hpp"
 #include "../inc/Server.hpp"
 
-Channel::Channel(): _name(""), _clients(), _topic("") {}
-Channel::Channel(std::string name): _name(name), _clients(), _topic("") {}
-Channel::Channel(std::string name, Client client, std::string topic): _name(name), _topic(topic) {
+Channel::Channel(): _name(""), _clients(), _topic(""), _inviteOnly(false) {}
+Channel::Channel(std::string name): _name(name), _clients(), _topic(""), _inviteOnly(false) {}
+Channel::Channel(std::string name, Client client, std::string topic): _name(name), _topic(topic), _chanOperator(client), _inviteOnly(false) {
     /*
         Constructor with client
         - Add client in Channel
@@ -73,6 +73,25 @@ void  Channel::names(Client client) {
     Server::send_to_client(client, msg);
 }
 
+bool    Channel::isInInvited(std::string nick) {
+    std::vector<std::string>::iterator it = _invited.begin();
+    std::vector<std::string>::iterator itend = _invited.end();
+
+    while (it != itend) {
+        if (*it == nick) { return (true); }
+        it++;
+    }
+    return (false);
+}
+
 std::string Channel::get_topic() {
     return _topic;
 }
+
+Client  Channel::get_chanOp() { return (_chanOperator); }
+bool    Channel::getMode() { return (_inviteOnly); }
+bool    Channel::getProtecTopic() { return (_protectedTopic); }
+void    Channel::addInvited(std::string invited) { _invited.push_back(invited); }
+void    Channel::setMode(bool mode) { _inviteOnly = mode; }
+void    Channel::setProtecTopic(bool mode) { _protectedTopic = mode; }
+void    Channel::setTopic(std::string new_topic) { _topic = new_topic; }

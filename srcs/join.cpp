@@ -11,6 +11,10 @@ void Server::join_or_create_channel(std::string name, std::string topic, std::li
     std::vector<Channel>::iterator ite = this->_channels.end();
     for (; it != ite; ++it) {
         if (it->get_name() == name) {
+            if (it->getMode() == true && !it->isInInvited(itclient->get_nick())) {
+                send_to_client(*itclient, generate_reply("473", itclient->get_nick(), it->get_name()));
+                return ;
+            }
             it->add_client(*itclient);
             std::string msg = ":" + itclient->get_nick() + " JOIN " + name + "\r\n";
             it->send(msg, *itclient, true);
