@@ -15,7 +15,9 @@ SRCS		= srcs/main.cpp \
 				srcs/nick.cpp \
 				srcs/mode.cpp \
 				srcs/invite.cpp \
-				srcs/topic.cpp
+				srcs/topic.cpp \
+				srcs/notice.cpp \
+				srcs/part.cpp
 
 CC			= c++
 CFLAGS		= #-Wall -Wextra -Werror -std=c++98

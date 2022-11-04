@@ -10,7 +10,7 @@ class Channel {
     public:
         Channel();
         Channel(std::string name);
-        Channel(std::string name, Client client, std::string topic);
+        Channel(std::string name, Client client);
         ~Channel();
 
         Channel & operator=( Channel const & rhs );
@@ -31,6 +31,8 @@ class Channel {
         void    setMode(bool mode);
         void    setProtecTopic(bool mode);
         void    setTopic(std::string newtopic);
+        void        leave_channel(Client client, std::string reason, std::string address);
+        std::vector<Client>::iterator find_client(std::string nick);
 
     private:
         std::string _name;

@@ -3,7 +3,7 @@
 
 Channel::Channel(): _name(""), _clients(), _topic(""), _inviteOnly(false) {}
 Channel::Channel(std::string name): _name(name), _clients(), _topic(""), _inviteOnly(false) {}
-Channel::Channel(std::string name, Client client, std::string topic): _name(name), _topic(topic), _chanOperator(client), _inviteOnly(false) {
+Channel::Channel(std::string name, Client client): _name(name), _topic(""), _chanOperator(client), _inviteOnly(false) {
     /*
         Constructor with client
         - Add client in Channel
@@ -95,3 +95,34 @@ void    Channel::addInvited(std::string invited) { _invited.push_back(invited); 
 void    Channel::setMode(bool mode) { _inviteOnly = mode; }
 void    Channel::setProtecTopic(bool mode) { _protectedTopic = mode; }
 void    Channel::setTopic(std::string new_topic) { _topic = new_topic; }
+
+void Channel::leave_channel(Client client, std::string reason, std::string address) {
+    std::vector<Client>::iterator instance = find_client(client.get_nick());
+    if (instance == _clients.end()) {
+        Server::send_to_client(client, ":" + address + " 442 " +  client.get_nick() + " " + _name + " :You're not on that channel\r\n");
+        return ;
+    }
+
+    _clients.erase(instance);
+    std::string end_msg = " PART " + _name + "\r\n";
+    if (reason.length() > 0) {
+        end_msg = " PART " + _name + " " + reason + "\r\n";
+    }
+    for (int i = 0; i < _clients.size(); i++) {
+        Server::send_to_client(_clients[i], ":" + client.get_nick() + end_msg);
+    }
+    Server::send_to_client(client, ":" + client.get_nick() + end_msg);
+}
+
+std::vector<Client>::iterator Channel::find_client(std::string nick) {
+    std::vector<Client>::iterator it = _clients.begin();
+	std::vector<Client>::iterator ite = _clients.end();
+
+	for (; it != ite; ++it) {
+		if (it->get_nick() == nick) {
+			return it;
+        }
+	}
+
+	return ite;
+}

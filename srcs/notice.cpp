@@ -1,12 +1,12 @@
 #include "../inc/Server.hpp"
 
-void Server::send_prvmsg(std::string target, std::vector<std::string>::iterator it, std::vector<std::string>::iterator ite, Client client) {
+void Server::send_notice(std::string target, std::vector<std::string>::iterator it, std::vector<std::string>::iterator ite, Client client) {
     std::string msg = (*it).erase(0, 1);
     ++it;
     for (; it != ite; ++it) {
         msg += " " + *it;
     }
-    std::string to_send = ":" + client.get_nick() + " PRIVMSG "  + target + " " + msg + "\r\n";
+    std::string to_send = ":" + client.get_nick() + " NOTICE "  + target + " " + msg + "\r\n";
     Channel chan;
     if (target[0] == '#') {
         std::vector<Channel>::iterator it_channel = _channels.begin();
