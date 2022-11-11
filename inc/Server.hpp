@@ -82,6 +82,8 @@ class Server
 		std::vector<std::string> get_join_args(std::string parsed);
 		void send_notice(std::string target, std::vector<std::string>::iterator it, std::vector<std::string>::iterator ite, Client client);
 		void part(std::string channel, std::vector<std::string>::iterator it, std::vector<std::string>::iterator ite, Client client);
+        void    change_nick_in_channels(const std::string old_nick, const std::string new_nick);
+		void	print_server_pop(void);
 };
 
 std::ostream &			operator<<( std::ostream & o, Server const & i );

@@ -28,7 +28,7 @@ class Client
 
 	void				handle_new_entry(std::string str);
 	int					complete_command();
-	void				connection();
+	void				connection(std::string password);
 	void				get_fullcmd();
 
 	std::string			get_cap();
@@ -56,6 +56,7 @@ class Client
 	char				buf[1000];
 	std::string			save;
 	std::string			cmd;
+	bool				_emptyPassWord;
 
 };
 

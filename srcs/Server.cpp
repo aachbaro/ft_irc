@@ -51,17 +51,7 @@ void	Server::poll_loop()
 {
 	while (1)
 	{
-		/* Affichage de la liste de clients */
-		std::list<Client>::iterator it = clients.begin();
-		std::list<Client>::iterator itend = clients.end();
-
-		std::cout << "Clients list: ";
-		while (it != itend)
-		{
-			std::cout << it->get_nick() + " - ";
-			it++;
-		}
-		std::cout << std::endl;
+		//print_server_pop();
 
 		/* Scan de la liste de fd  en recherche d'activite*/
 		std::cout << "polling fds..." << std::endl;
@@ -108,7 +98,7 @@ void	Server::handle_new_connection()
 	int new_fd = accept(this->listener, (struct sockaddr *)&remote_addr, &addr_size);
 	Client		new_client(new_fd);
 
-	new_client.connection();
+	new_client.connection(password);
     const char  *cpy = new_client.get_nick().c_str();
     std::string allowed_char("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefhijklmnopqrstuvwxyz0123456789`|^_-{}[]\\");
     int        i(0);

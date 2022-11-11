@@ -5,9 +5,28 @@
 */
 
 
-Client::Client() {}
+Client::Client() {
+	nick = "";
+	user = "";
+	mode = "";
+	unused = "";
+	realname = "";
+	pass = "";
+	save = "";
+	cmd = "";
+	_emptyPassWord = 0;
+}
 Client::Client(int fd) : fd(fd)
 {
+	nick = "";
+	user = "";
+	mode = "";
+	unused = "";
+	realname = "";
+	pass = "";
+	save = "";
+	cmd = "";
+	_emptyPassWord = 0;
 }
 
 Client::Client( const Client & src )
@@ -77,10 +96,12 @@ void		Client::handle_new_entry(std::string str)
 	}
 }
 
-void	Client::connection()
+void	Client::connection(std::string password)
 {
-	while (this->nick.empty() || pass.empty() || user.empty())
+	while ((this->nick.empty() || pass.empty() || user.empty()))
 	{
+		if (!nick.empty() && pass.empty())
+			break ;
 		memset(buf, 0, 1000);
 		if (this->save.empty())
 			recv(fd, buf, 1000, 0);

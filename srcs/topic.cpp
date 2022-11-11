@@ -15,14 +15,14 @@ void Server::topic(std::string chan, std::string topic, std::list<Client>::itera
         send_to_client(*itclient, reply);
         return ;
     }
-
     /* CHECK IF THE ASKER IS IN THE CHAN */
     std::vector<Client>::iterator itUsers = itChan->get_clients().begin();
     std::vector<Client>::iterator itUsersend = itChan->get_clients().end();
     bool    isInChan(0);
 
     while (itUsers != itUsersend) {
-        if (itUsers->get_nick() == itclient->get_nick()) { isInChan = 1; break ; };
+        std::cout << "wtf" << std::endl;
+        if (itclient->get_nick() == itUsers->get_nick()) { isInChan = 1; break ; };
         itUsers++;
     }
     if (!isInChan) {

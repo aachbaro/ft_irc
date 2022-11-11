@@ -81,3 +81,37 @@ void Server::redirect_cmd(std::vector<std::string> parsed, std::list<Client>::it
             topic(*(first + 1), itclient);
     }
 }
+
+void    Server::print_server_pop(void)
+{
+	    /* Affichage de la liste de clients */
+	std::list<Client>::iterator it = clients.begin();
+	std::list<Client>::iterator itend = clients.end();
+	std::cout << "Clients list: ";
+	while (it != itend)
+	{
+		std::cout << it->get_nick() + " - ";
+		it++;
+	}
+	std::cout << std::endl;
+       /* Affichage des channel et de leur population */
+    std::vector<Channel>::iterator  itChan = _channels.begin();
+    std::vector<Channel>::iterator  itChanend = _channels.end();
+    std::vector<Client>::iterator     itCli;
+    std::vector<Client>::iterator     itCliend;
+
+    while (itChan != itChanend)
+    {
+        itCli = itChan->get_clients().begin();
+        itCliend = itChan->get_clients().end();
+        std::cout << itChan->get_name() + ": ";
+        while (itCli != itCliend)
+        {
+            std::cout << " - " + itCli->get_nick();
+            itCli++;
+        }
+        std::cout << std::endl;
+        itChan++;
+    }
+    std::cout << std::endl;
+}

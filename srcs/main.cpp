@@ -7,6 +7,7 @@ int main(int ac, char **av)
 {
     Server  irc_serv(av[2], av[1]);
 
+
     irc_serv.set_listener_sock();
     irc_serv.poll_loop();
 }

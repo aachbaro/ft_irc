@@ -42,6 +42,7 @@ class Channel {
         std::string _topic;
         bool        _inviteOnly;
         bool        _protectedTopic;
+
 };
 
 #endif
