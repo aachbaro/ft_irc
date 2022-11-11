@@ -17,6 +17,8 @@ Channel::~Channel() {
 Channel & Channel::operator=(Channel const & rhs) {
     this->_name = rhs._name;;
     this->_clients = rhs._clients;
+    _topic = rhs._topic;
+    _chanOperator = rhs._chanOperator;
 
     return *this;
 }
@@ -94,7 +96,7 @@ bool    Channel::getProtecTopic() { return (_protectedTopic); }
 void    Channel::addInvited(std::string invited) { _invited.push_back(invited); }
 void    Channel::setMode(bool mode) { _inviteOnly = mode; }
 void    Channel::setProtecTopic(bool mode) { _protectedTopic = mode; }
-void    Channel::setTopic(std::string new_topic) { _topic = new_topic; }
+void    Channel::setTopic(const std::string new_topic) { _topic = new_topic; }
 
 void Channel::leave_channel(Client client, std::string reason, std::string address) {
     std::vector<Client>::iterator instance = find_client(client.get_nick());
