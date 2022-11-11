@@ -16,8 +16,9 @@ void Server::topic(std::string chan, std::string topic, std::list<Client>::itera
         return ;
     }
     /* CHECK IF THE ASKER IS IN THE CHAN */
-    std::vector<Client>::iterator itUsers = itChan->get_clients().begin();
-    std::vector<Client>::iterator itUsersend = itChan->get_clients().end();
+    std::vector<Client> chan_clients = itChan->get_clients();
+    std::vector<Client>::iterator itUsers = chan_clients.begin();
+    std::vector<Client>::iterator itUsersend = chan_clients.end();
     bool    isInChan(0);
 
     while (itUsers != itUsersend) {
@@ -59,8 +60,9 @@ void    Server::topic(std::string chan, std::list<Client>::iterator itclient)
     }
 
     /* CHECK IF THE ASKER IS IN THE CHAN */
-    std::vector<Client>::iterator itUsers = itChan->get_clients().begin();
-    std::vector<Client>::iterator itUsersend = itChan->get_clients().end();
+    std::vector<Client> chan_clients = itChan->get_clients();
+    std::vector<Client>::iterator itUsers = chan_clients.begin();
+    std::vector<Client>::iterator itUsersend = chan_clients.end();
     bool    isInChan(0);
 
     while (itUsers != itUsersend) {

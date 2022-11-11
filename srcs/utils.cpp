@@ -102,8 +102,9 @@ void    Server::print_server_pop(void)
 
     while (itChan != itChanend)
     {
-        itCli = itChan->get_clients().begin();
-        itCliend = itChan->get_clients().end();
+        std::vector<Client> chan_clients = itChan->get_clients();
+        itCli = chan_clients.begin();
+        itCliend = chan_clients.end();
         std::cout << itChan->get_name() + ": ";
         while (itCli != itCliend)
         {

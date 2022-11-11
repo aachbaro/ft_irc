@@ -51,7 +51,7 @@ void	Server::poll_loop()
 {
 	while (1)
 	{
-		//print_server_pop();
+		print_server_pop();
 
 		/* Scan de la liste de fd  en recherche d'activite*/
 		std::cout << "polling fds..." << std::endl;
@@ -103,7 +103,7 @@ void	Server::handle_new_connection()
     std::string allowed_char("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefhijklmnopqrstuvwxyz0123456789`|^_-{}[]\\");
     int        i(0);
 
-	
+
     if (new_client.get_nick().length() > 20)
     {
         std::string msg = generate_reply("", new_client.get_nick(), new_client.get_nick() + " Nickname too long, max. 20 characters");
