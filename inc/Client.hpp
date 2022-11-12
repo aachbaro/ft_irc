@@ -20,7 +20,7 @@ class Client
 	public:
 
 		Client();
-		Client(int fd);
+		Client(int fd, std::string host);
 		Client( Client const & src );
 		~Client();
 
@@ -41,12 +41,14 @@ class Client
 	char				*get_buf();
 	int					get_fd();
 	std::string			get_cmd();
+	std::string			get_host();
 
 	void				set_nick(const std::string nickname);
 
 	private:
 
 	std::string			nick;
+	std::string			host;
 	std::string			user;
 	std::string			mode;
 	std::string			unused;

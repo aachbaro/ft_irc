@@ -16,7 +16,8 @@ Client::Client() {
 	cmd = "";
 	_emptyPassWord = 0;
 }
-Client::Client(int fd) : fd(fd)
+
+Client::Client(int fd, std::string host) : fd(fd), host(host)
 {
 	nick = "";
 	user = "";
@@ -153,6 +154,7 @@ std::string		Client::get_realname() {return (this->realname); }
 char			*Client::get_buf() {return (this->buf); }
 int				Client::get_fd() {return (this->fd); }
 std::string		Client::get_cmd() {return (this->cmd); }
+std::string		Client::get_host() {return (this->host);}
 
 void			Client::set_nick(const std::string nickname) {this->nick = nickname; }
 

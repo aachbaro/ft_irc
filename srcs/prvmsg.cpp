@@ -20,6 +20,6 @@ void Server::send_prvmsg(std::string target, std::vector<std::string>::iterator 
         return chan.send(to_send, client, false);
     }
 
-    Client to = find_client_by_nick(target);
+    Client to = *(find_client_by_nick(target));
     send_to_client(to, to_send);
 }

@@ -53,7 +53,7 @@ void Server::invite(std::string channel, std::string target, std::list<Client>::
         return ;
     }
     /* SEND INVITATION TO THE TARGET */
-    std::string reply = generate_reply("341", find_client_by_nick(target).get_nick(), channel);
-    send_to_client(find_client_by_nick(target), reply);
+    std::string reply = generate_reply("341", find_client_by_nick(target)->get_nick(), channel);
+    send_to_client(*(find_client_by_nick(target)), reply);
     itChan->addInvited(target);
 }

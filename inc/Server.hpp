@@ -1,6 +1,8 @@
 #ifndef SERVER_HPP
 # define SERVER_HPP
 
+# include <netinet/in.h>
+# include <arpa/inet.h>
 # include <sys/types.h>
 # include <sys/socket.h>
 # include <netdb.h>
@@ -51,7 +53,7 @@ class Server
 		std::string 				generate_reply(std::string code, std::string target, std::string msg);
 		void send_prvmsg(std::string target, std::vector<std::string>::iterator it, std::vector<std::string>::iterator ite, Client client);
 		void names(std::vector<std::string>::iterator it, std::vector<std::string>::iterator ite, Client client);
-		Client find_client_by_nick(std::string nick);
+		std::list<Client>::iterator find_client_by_nick(std::string nick);
 
 	private:
 

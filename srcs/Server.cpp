@@ -96,13 +96,16 @@ void	Server::handle_new_connection()
 	struct sockaddr_storage	remote_addr;
 	socklen_t addr_size = sizeof(remote_addr);
 	int new_fd = accept(this->listener, (struct sockaddr *)&remote_addr, &addr_size);
-	Client		new_client(new_fd);
+	getsockname(new_fd, (struct sockaddr*)(&remote_addr), &addr_size);
+	struct sockaddr_in * tmp = reinterpret_cast<struct sockaddr_in *> (&remote_addr);
+	std::string host = inet_ntoa(tmp->sin_addr);
+	Client		new_client(new_fd, host);
 
+	std::cout << "HOSt CLient: " << new_client.get_host() << std::endl;
 	new_client.connection(password);
     const char  *cpy = new_client.get_nick().c_str();
     std::string allowed_char("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefhijklmnopqrstuvwxyz0123456789`|^_-{}[]\\");
     int        i(0);
-
 
     if (new_client.get_nick().length() > 20)
     {
@@ -193,6 +196,8 @@ void	Server::set_listener_sock(void)
 	hints.ai_socktype = SOCK_STREAM;
 	hints.ai_flags = AI_PASSIVE;
 
+
+
 	if ((status = getaddrinfo(NULL, PORT, &hints, &servinfo)) != 0)
 	{
 		std::cerr << "getaddrinfo error: " << gai_strerror(status) << std::endl;
@@ -246,16 +251,16 @@ void	Server::add_socket_to_list(std::list<pollfd> *pfds, int filed, short ev, sh
 	pfds->push_back(tmp);
 }
 
-Client Server::find_client_by_nick(std::string nick) {
+std::list<Client>::iterator Server::find_client_by_nick(std::string nick) {
 	std::list<Client>::iterator it = clients.begin();
 	std::list<Client>::iterator ite = clients.end();
 
 	for (; it != ite; ++it) {
 		if (it->get_nick() == nick)
-			return *it;
+			return it;
 	}
 
-	return NULL;
+	return ite;
 }
 
 
