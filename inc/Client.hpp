@@ -44,6 +44,8 @@ class Client
 	std::string			get_host();
 
 	void				set_nick(const std::string nickname);
+	void				set_username(const std::string username);
+	void				set_operator(const bool to_op);
 
 	private:
 
@@ -59,6 +61,7 @@ class Client
 	std::string			save;
 	std::string			cmd;
 	bool				_emptyPassWord;
+	bool				_operator;
 
 };
 

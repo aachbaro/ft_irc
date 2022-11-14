@@ -51,7 +51,7 @@ void	Server::poll_loop()
 {
 	while (1)
 	{
-		print_server_pop();
+		// print_server_pop();
 
 		/* Scan de la liste de fd  en recherche d'activite*/
 		std::cout << "polling fds..." << std::endl;
@@ -63,7 +63,8 @@ void	Server::poll_loop()
 void	Server::polling()
 {
 	/* traduction de la liste chainee de pfds en array pour la fonction poll */
-	this->arr_pfds = (pollfd *)malloc(sizeof(this->arr_pfds) * sizeof(this->pfds.size()));
+	std::cout << "pfds : " << sizeof(pfds.size()) * sizeof(this->arr_pfds) << std::endl;
+	this->arr_pfds = (pollfd *)malloc(sizeof(this->arr_pfds) * sizeof(pfds.size()));
 	std::copy(this->pfds.begin(), this->pfds.end(), this->arr_pfds);
 	std::cout << "pfds : " << pfds.size() << std::endl;
 	poll(this->arr_pfds, this->pfds.size(), -1);
@@ -79,6 +80,7 @@ void	Server::handle_pfds()
 
 	for (it ; it != itend; it++)
 	{
+		std::cout << "it->client: " << itclient->get_nick() << std::endl;
 		if (it->revents & POLLIN)
 		{
 			if (it->fd == this->listener)
@@ -101,9 +103,9 @@ void	Server::handle_new_connection()
 	std::string host = inet_ntoa(tmp->sin_addr);
 	Client		new_client(new_fd, host);
 
-	std::cout << "HOSt CLient: " << new_client.get_host() << std::endl;
 	new_client.connection(password);
     const char  *cpy = new_client.get_nick().c_str();
+	new_client.set_username(new_client.get_nick());
     std::string allowed_char("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefhijklmnopqrstuvwxyz0123456789`|^_-{}[]\\");
     int        i(0);
 
@@ -262,7 +264,6 @@ std::list<Client>::iterator Server::find_client_by_nick(std::string nick) {
 
 	return ite;
 }
-
 
 /*
 ** --------------------------------- ACCESSOR ---------------------------------

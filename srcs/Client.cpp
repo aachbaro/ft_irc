@@ -15,6 +15,7 @@ Client::Client() {
 	save = "";
 	cmd = "";
 	_emptyPassWord = 0;
+	_operator = false;
 }
 
 Client::Client(int fd, std::string host) : fd(fd), host(host)
@@ -28,12 +29,14 @@ Client::Client(int fd, std::string host) : fd(fd), host(host)
 	save = "";
 	cmd = "";
 	_emptyPassWord = 0;
+	_operator = false;
 }
 
 Client::Client( const Client & src )
 {
 	nick = src.nick;
 	user = src.user;
+	host = src.host;
 	mode = src.mode;
 	unused = src.unused;
 	realname = src.realname;
@@ -41,6 +44,7 @@ Client::Client( const Client & src )
 	fd = src.fd;
 	save = src.save;
 	cmd = src.cmd;
+	_operator = src._operator;
 }
 
 
@@ -157,6 +161,8 @@ std::string		Client::get_cmd() {return (this->cmd); }
 std::string		Client::get_host() {return (this->host);}
 
 void			Client::set_nick(const std::string nickname) {this->nick = nickname; }
+void			Client::set_username(const std::string username) {this->user = username;}
+void			Client::set_operator(const bool to_op) {this->_operator = to_op;}
 
 
 /* ************************************************************************** */

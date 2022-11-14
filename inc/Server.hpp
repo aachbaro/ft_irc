@@ -54,6 +54,8 @@ class Server
 		void send_prvmsg(std::string target, std::vector<std::string>::iterator it, std::vector<std::string>::iterator ite, Client client);
 		void names(std::vector<std::string>::iterator it, std::vector<std::string>::iterator ite, Client client);
 		std::list<Client>::iterator find_client_by_nick(std::string nick);
+		void oper(Client client, std::string name, std::string password);
+		void quit(Client client, std::vector<std::string>::iterator it, std::vector<std::string>::iterator ite);
 
 	private:
 
