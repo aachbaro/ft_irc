@@ -1,10 +1,16 @@
 #include "../inc/Server.hpp"
 
-void Server::quit(Client client, std::vector<std::string>::iterator it, std::vector<std::string>::iterator ite) {
+void Server::quit(Client client, std::vector<std::string>::iterator it, std::vector<std::string>::iterator ite, bool kill) {
     std::string reason = (*it).erase(0, 1);
+    if (kill == true) {
+        reason += "Killed (" + client.get_nick() + "(";
+    }
     ++it;
     for (; it != ite; ++it) {
         reason += " " + *it;
+    }
+    if (kill == true) {
+        reason += "))";
     }
 
     for (int i = 0; i < _channels.size(); i++) {

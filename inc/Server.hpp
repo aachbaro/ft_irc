@@ -55,7 +55,8 @@ class Server
 		void names(std::vector<std::string>::iterator it, std::vector<std::string>::iterator ite, Client client);
 		std::list<Client>::iterator find_client_by_nick(std::string nick);
 		void oper(Client client, std::string name, std::string password);
-		void quit(Client client, std::vector<std::string>::iterator it, std::vector<std::string>::iterator ite);
+		void quit(Client client, std::vector<std::string>::iterator it, std::vector<std::string>::iterator ite, bool kill);
+		void kill(Client client, std::string nickname, std::vector<std::string>::iterator it, std::vector<std::string>::iterator ite);
 
 	private:
 
@@ -72,7 +73,7 @@ class Server
 		time_t				start;
 		std::list<std::list<Client>::iterator>	_toErase;
 		std::list<std::list<pollfd>::iterator>	_pfdErase;
-		
+
 		std::vector<std::string>	parse_cmd(std::string command, std::list<Client>::iterator itclient);
 		void 						redirect_cmd(std::vector<std::string> parsed, std::list<Client>::iterator itclient);
 		void						clear_args();

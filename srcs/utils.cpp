@@ -81,13 +81,18 @@ void Server::redirect_cmd(std::vector<std::string> parsed, std::list<Client>::it
             topic(*(first + 1), itclient);
     }
     if (*first == "OPER") {
-        if (parsed.size() != 3)
+        if (parsed.size() < 3)
             send_to_client(*itclient, ":" + itclient->get_nick() + " OPER :Not enough parameters\r\n");
         else
             oper(*itclient, *(first + 1), *(first + 2));
     }
     if (*first == "QUIT") {
-        quit(*itclient, first + 1, parsed.end());
+        quit(*itclient, first + 1, parsed.end(), false);
+    }
+    if (*first == "kill") {
+        if (parsed.size() < 3)
+            send_to_client(*itclient, ":" + itclient->get_nick() + " KILL :Not enough parameters\r\n");
+        kill(*itclient, *(first + 1), first + 2, parsed.end());
     }
 }
 

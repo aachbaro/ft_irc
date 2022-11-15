@@ -159,6 +159,7 @@ char			*Client::get_buf() {return (this->buf); }
 int				Client::get_fd() {return (this->fd); }
 std::string		Client::get_cmd() {return (this->cmd); }
 std::string		Client::get_host() {return (this->host);}
+bool			Client::get_operator() {return this->_operator;}
 
 void			Client::set_nick(const std::string nickname) {this->nick = nickname; }
 void			Client::set_username(const std::string username) {this->user = username;}

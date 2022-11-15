@@ -19,7 +19,8 @@ SRCS		= srcs/main.cpp \
 				srcs/notice.cpp \
 				srcs/part.cpp \
 				srcs/oper.cpp \
-				srcs/quit.cpp
+				srcs/quit.cpp \
+				srcs/kill.cpp
 
 CC			= c++
 CFLAGS		= #-Wall -Wextra -Werror -std=c++98

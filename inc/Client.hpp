@@ -42,6 +42,7 @@ class Client
 	int					get_fd();
 	std::string			get_cmd();
 	std::string			get_host();
+	bool				get_operator();
 
 	void				set_nick(const std::string nickname);
 	void				set_username(const std::string username);
