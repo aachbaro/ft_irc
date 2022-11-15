@@ -51,7 +51,7 @@ void	Server::poll_loop()
 {
 	while (1)
 	{
-		// print_server_pop();
+		print_server_pop();
 
 		/* Scan de la liste de fd  en recherche d'activite*/
 		std::cout << "polling fds..." << std::endl;
@@ -80,7 +80,7 @@ void	Server::handle_pfds()
 
 	for (it ; it != itend; it++)
 	{
-		std::cout << "it->client: " << itclient->get_nick() << std::endl;
+		//std::cout << "it->client: " << itclient->get_nick() << std::endl;
 		if (it->revents & POLLIN)
 		{
 			if (it->fd == this->listener)
@@ -91,6 +91,23 @@ void	Server::handle_pfds()
 		if (it != pfds.begin())
 			itclient++;
 	}
+	std::cout << "cmd done" << std::endl;
+	std::list<std::list<Client>::iterator>::iterator	itit = _toErase.begin();
+	std::list<std::list<Client>::iterator>::iterator	ititend = _toErase.end();
+	while (itit != ititend)
+	{
+		clients.erase(*itit);
+		itit++;
+	}
+	std::list<std::list<pollfd>::iterator>::iterator	itfd = _pfdErase.begin();
+	std::list<std::list<pollfd>::iterator>::iterator	itfdend = _pfdErase.end();
+	while (itfd != itfdend)
+	{
+		pfds.erase(*itfd);
+		itfd++;
+	}
+	_toErase.clear();
+	_pfdErase.clear();
 }
 
 void	Server::handle_new_connection()

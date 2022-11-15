@@ -16,10 +16,10 @@ void Server::quit(Client client, std::vector<std::string>::iterator it, std::vec
         chan_clients.erase(it_client);
     }
     std::list<Client>::iterator it_client = find_client_by_nick(client.get_nick());
-    clients.erase(it_client);
+    _toErase.push_back(it_client);
     for (std::list<pollfd>::iterator it_fds = pfds.begin(); it_fds != pfds.end(); ++it_fds) {
         if (it_fds->fd == client.get_fd()) {
-            pfds.erase(it_fds);
+            _pfdErase.push_back(it_fds);
             return ;
         }
     }

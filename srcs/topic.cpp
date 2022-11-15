@@ -22,7 +22,6 @@ void Server::topic(std::string chan, std::string topic, std::list<Client>::itera
     bool    isInChan(0);
 
     while (itUsers != itUsersend) {
-        std::cout << "wtf" << std::endl;
         if (itclient->get_nick() == itUsers->get_nick()) { isInChan = 1; break ; };
         itUsers++;
     }

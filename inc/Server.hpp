@@ -70,7 +70,9 @@ class Server
 		std::list<Client>	clients;
 		std::vector<Channel> _channels;
 		time_t				start;
-
+		std::list<std::list<Client>::iterator>	_toErase;
+		std::list<std::list<pollfd>::iterator>	_pfdErase;
+		
 		std::vector<std::string>	parse_cmd(std::string command, std::list<Client>::iterator itclient);
 		void 						redirect_cmd(std::vector<std::string> parsed, std::list<Client>::iterator itclient);
 		void						clear_args();
