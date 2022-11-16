@@ -7,6 +7,7 @@
 Server::Server(std::string pword, std::string given_port) : password(pword), port(given_port), start(time(0))
 {
 	this->address = "127.0.0.1";
+	_die = false;
 }
 
 Server::Server( const Server & src )
@@ -49,7 +50,7 @@ std::ostream &			operator<<( std::ostream & o, Server const & i )
 
 void	Server::poll_loop()
 {
-	while (1)
+	while (!_die)
 	{
 		print_server_pop();
 
@@ -63,12 +64,12 @@ void	Server::poll_loop()
 void	Server::polling()
 {
 	/* traduction de la liste chainee de pfds en array pour la fonction poll */
-	std::cout << "pfds : " << sizeof(pfds.size()) * sizeof(this->arr_pfds) << std::endl;
 	this->arr_pfds = (pollfd *)malloc(sizeof(this->arr_pfds) * sizeof(pfds.size()));
 	std::copy(this->pfds.begin(), this->pfds.end(), this->arr_pfds);
 	std::cout << "pfds : " << pfds.size() << std::endl;
 	poll(this->arr_pfds, this->pfds.size(), -1);
 	std::copy(this->arr_pfds, this->arr_pfds + this->pfds.size(), this->pfds.begin());
+	free(arr_pfds);
 }
 
 void	Server::handle_pfds()
@@ -91,7 +92,6 @@ void	Server::handle_pfds()
 		if (it != pfds.begin())
 			itclient++;
 	}
-	std::cout << "cmd done" << std::endl;
 	std::list<std::list<Client>::iterator>::iterator	itit = _toErase.begin();
 	std::list<std::list<Client>::iterator>::iterator	ititend = _toErase.end();
 	while (itit != ititend)

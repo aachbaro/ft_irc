@@ -37,6 +37,7 @@ void Server::topic(std::string chan, std::string topic, std::list<Client>::itera
             return ;
         }
     }
+    topic = topic.substr(topic.find(":") + 1);
     itChan->setTopic(topic);
     //send_to_client();
 }

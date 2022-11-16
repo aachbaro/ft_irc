@@ -28,8 +28,7 @@ std::string Channel::get_name() {
 }
 
 std::vector<Client> Channel::get_clients() {
-    return this->_clients;
-}
+    return _clients; }
 
 int Channel::add_client(Client client) {
     /*
@@ -47,6 +46,32 @@ int Channel::add_client(Client client) {
 
     this->_clients.push_back(client);
     return 1;
+}
+
+void    Channel::del_client_by_nick(std::string nick_name)
+{
+    std::vector<Client>::iterator   it = _clients.begin();
+    std::vector<Client>::iterator   itend = _clients.end();
+
+    if (_chanOperator.get_nick() == nick_name)  { _chanOperator.set_nick(""); }
+    while (it != itend)
+    {
+        if (it->get_nick() == nick_name) { _clients.erase(it); }
+        it++;
+    }
+}
+
+void    Channel::change_clients_nick(std::string old_nick, std::string new_nick)
+{
+    std::vector<Client>::iterator   it = _clients.begin();
+    std::vector<Client>::iterator   itend = _clients.end();
+
+    if (_chanOperator.get_nick() == old_nick)  { _chanOperator.set_nick(new_nick); }
+    while (it != itend)
+    {
+        if (it->get_nick() == old_nick) { it->set_nick(new_nick); }
+        it++;
+    }
 }
 
 void Channel::send(std::string msg, Client client, bool send_to_same) {

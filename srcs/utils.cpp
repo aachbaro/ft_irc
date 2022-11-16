@@ -84,21 +84,30 @@ void Server::redirect_cmd(std::vector<std::string> parsed, std::list<Client>::it
         if (parsed.size() < 3)
             send_to_client(*itclient, ":" + itclient->get_nick() + " OPER :Not enough parameters\r\n");
         else
-            oper(*itclient, *(first + 1), *(first + 2));
+            oper(itclient, *(first + 1), *(first + 2));
     }
     if (*first == "QUIT") {
-        quit(*itclient, first + 1, parsed.end(), false);
+        if (parsed.size() > 2)
+            quit(*itclient, parsed, false, true);
+        else 
+            quit(*itclient, parsed, false, false);
     }
     if (*first == "kill") {
         if (parsed.size() < 3)
             send_to_client(*itclient, ":" + itclient->get_nick() + " KILL :Not enough parameters\r\n");
-        kill(*itclient, *(first + 1), first + 2, parsed.end());
+        kill(*itclient, *(first + 1), parsed);
+    }
+    if (*first == "die")
+    {
+        if (itclient->get_operator()) { _die = true; }
+        else { send_to_client(*itclient, ":" + address + " 481 " + itclient->get_nick() + " :Permission Denied\r\n"); }
     }
 }
 
 void    Server::print_server_pop(void)
 {
 	    /* Affichage de la liste de clients */
+    std::cout << "---------------- SERVER INFO ------------------" << std::endl;
 	std::list<Client>::iterator it = clients.begin();
 	std::list<Client>::iterator itend = clients.end();
 	std::cout << "Clients list: ";
@@ -119,7 +128,8 @@ void    Server::print_server_pop(void)
         std::vector<Client> chan_clients = itChan->get_clients();
         itCli = chan_clients.begin();
         itCliend = chan_clients.end();
-        std::cout << itChan->get_name() + ": ";
+        std::cout << "------- " + itChan->get_name() + ": " + "topic :" + itChan->get_topic() << std::endl;
+        std::cout << "channel operator: " + itChan->get_chanOp().get_nick() << std::endl;
         while (itCli != itCliend)
         {
             std::cout << " - " + itCli->get_nick();
@@ -129,4 +139,5 @@ void    Server::print_server_pop(void)
         itChan++;
     }
     std::cout << std::endl;
+    std::cout << "-----------------------------------------------" << std::endl;
 }

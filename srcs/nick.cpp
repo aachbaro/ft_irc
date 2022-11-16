@@ -24,7 +24,7 @@ void Server::set_or_change_nick(const std::string new_nickname, std::list<Client
         {
             change_nick_in_channels(itclient->get_nick(), new_nickname);
             itclient->set_nick(new_nickname);
-            std::string msg = generate_reply("", itclient->get_nick(), "Your nick name is now " + new_nickname);
+            std::string msg = generate_reply("NICK ", itclient->get_nick(), "Your nick name is now " + new_nickname);
             send_to_client(*itclient, msg);
         }
         else
@@ -44,21 +44,10 @@ void    Server::change_nick_in_channels(const std::string old_nick, const std::s
 {
     std::vector<Channel>::iterator  itChan = _channels.begin();
     std::vector<Channel>::iterator  itChanend = _channels.end();
-    std::vector<Client>::iterator     itCli;
-    std::vector<Client>::iterator     itCliend;
 
     while (itChan != itChanend)
     {
-        itCli = itChan->get_clients().begin();
-        itCliend = itChan->get_clients().end();
-        while (itCli != itCliend)
-        {
-            if (itCli->get_nick() == old_nick) {
-                if (itCli->get_nick() == itChan->get_chanOp().get_nick()) { itChan->get_chanOp().set_nick(new_nick); } 
-                itCli->set_nick(new_nick); 
-            }
-            itCli++;
-        }
+        itChan->change_clients_nick(old_nick, new_nick);
         itChan++;
     }
 }

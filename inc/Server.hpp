@@ -54,9 +54,9 @@ class Server
 		void send_prvmsg(std::string target, std::vector<std::string>::iterator it, std::vector<std::string>::iterator ite, Client client);
 		void names(std::vector<std::string>::iterator it, std::vector<std::string>::iterator ite, Client client);
 		std::list<Client>::iterator find_client_by_nick(std::string nick);
-		void oper(Client client, std::string name, std::string password);
-		void quit(Client client, std::vector<std::string>::iterator it, std::vector<std::string>::iterator ite, bool kill);
-		void kill(Client client, std::string nickname, std::vector<std::string>::iterator it, std::vector<std::string>::iterator ite);
+		void oper(std::list<Client>::iterator client, std::string name, std::string password);
+		void quit(Client client, std::vector<std::string> comment, bool kill, bool reason);
+		void kill(Client client, std::string nickname, std::vector<std::string> theresReason);
 
 	private:
 
@@ -71,6 +71,7 @@ class Server
 		std::list<Client>	clients;
 		std::vector<Channel> _channels;
 		time_t				start;
+		bool				_die;
 		std::list<std::list<Client>::iterator>	_toErase;
 		std::list<std::list<pollfd>::iterator>	_pfdErase;
 
