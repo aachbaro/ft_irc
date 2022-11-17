@@ -89,7 +89,7 @@ void Server::redirect_cmd(std::vector<std::string> parsed, std::list<Client>::it
     if (*first == "QUIT") {
         if (parsed.size() > 2)
             quit(*itclient, parsed, false, true);
-        else 
+        else
             quit(*itclient, parsed, false, false);
     }
     if (*first == "kill") {
@@ -120,12 +120,12 @@ void    Server::print_server_pop(void)
        /* Affichage des channel et de leur population */
     std::vector<Channel>::iterator  itChan = _channels.begin();
     std::vector<Channel>::iterator  itChanend = _channels.end();
-    std::vector<Client>::iterator     itCli;
-    std::vector<Client>::iterator     itCliend;
+    std::list<Client>::iterator     itCli;
+    std::list<Client>::iterator     itCliend;
 
     while (itChan != itChanend)
     {
-        std::vector<Client> chan_clients = itChan->get_clients();
+        std::list<Client> chan_clients = itChan->get_clients();
         itCli = chan_clients.begin();
         itCliend = chan_clients.end();
         std::cout << "------- " + itChan->get_name() + ": " + "topic :" + itChan->get_topic() << std::endl;

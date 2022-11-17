@@ -27,8 +27,8 @@ void Server::quit(Client client, std::vector<std::string> comment, bool kill, bo
     std::vector<Channel>::iterator  itChan = _channels.begin();
     std::vector<Channel>::iterator  itChanend = _channels.end();
     while (itChan != itChanend) {
-        std::vector<Client> chan_clients = itChan->get_clients();
-        std::vector<Client>::iterator it_client = itChan->find_client(client.get_nick());
+        std::list<Client> chan_clients = itChan->get_clients();
+        std::list<Client>::iterator it_client = itChan->find_client(client.get_nick());
         itChan->send(":" + client.get_nick() + " QUIT :Quit: " + reason + "\r\n", client, false);
         //_channels[i].del_client_by_nick(client.get_nick());
         itChan++;

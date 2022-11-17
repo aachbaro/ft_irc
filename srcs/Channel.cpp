@@ -27,7 +27,7 @@ std::string Channel::get_name() {
     return this->_name;
 }
 
-std::vector<Client> Channel::get_clients() {
+std::list<Client> Channel::get_clients() {
     return _clients; }
 
 int Channel::add_client(Client client) {
@@ -36,8 +36,8 @@ int Channel::add_client(Client client) {
         - If client already in channel, return 0
         - If client added, return 1;
     */
-    std::vector<Client>::iterator it = _clients.begin();
-    std::vector<Client>::iterator ite = _clients.end();
+    std::list<Client>::iterator it = _clients.begin();
+    std::list<Client>::iterator ite = _clients.end();
 
     for (; it != ite; ++it) {
         if (it->get_nick() == client.get_nick())
@@ -50,8 +50,8 @@ int Channel::add_client(Client client) {
 
 void    Channel::del_client_by_nick(std::string nick_name)
 {
-    std::vector<Client>::iterator   it = _clients.begin();
-    std::vector<Client>::iterator   itend = _clients.end();
+    std::list<Client>::iterator   it = _clients.begin();
+    std::list<Client>::iterator   itend = _clients.end();
 
     while (it != itend)
     {
@@ -67,8 +67,8 @@ void    Channel::del_client_by_nick(std::string nick_name)
 
 void    Channel::change_clients_nick(std::string old_nick, std::string new_nick)
 {
-    std::vector<Client>::iterator   it = _clients.begin();
-    std::vector<Client>::iterator   itend = _clients.end();
+    std::list<Client>::iterator   it = _clients.begin();
+    std::list<Client>::iterator   itend = _clients.end();
 
     if (_chanOperator.get_nick() == old_nick)  { _chanOperator.set_nick(new_nick); }
     while (it != itend)
@@ -79,8 +79,8 @@ void    Channel::change_clients_nick(std::string old_nick, std::string new_nick)
 }
 
 void Channel::send(std::string msg, Client client, bool send_to_same) {
-    std::vector<Client>::iterator it = _clients.begin();
-    std::vector<Client>::iterator ite = _clients.end();
+    std::list<Client>::iterator it = _clients.begin();
+    std::list<Client>::iterator ite = _clients.end();
     for (; it != ite; ++it) {
         if (!send_to_same && it->get_nick() == client.get_nick())
             continue;
@@ -89,8 +89,8 @@ void Channel::send(std::string msg, Client client, bool send_to_same) {
 }
 
 void  Channel::names(Client client) {
-    std::vector<Client>::iterator it = _clients.begin();
-    std::vector<Client>::iterator ite = _clients.end();
+    std::list<Client>::iterator it = _clients.begin();
+    std::list<Client>::iterator ite = _clients.end();
     std::string clients = "";
     for (; it != ite; ++it) {
         if (it != _clients.begin())
@@ -125,7 +125,7 @@ void    Channel::setProtecTopic(bool mode) { _protectedTopic = mode; }
 void    Channel::setTopic(const std::string new_topic) { _topic = new_topic; }
 
 void Channel::leave_channel(Client client, std::string reason, std::string address) {
-    std::vector<Client>::iterator instance = find_client(client.get_nick());  
+    std::list<Client>::iterator instance = find_client(client.get_nick());
     if (instance == _clients.end()) {
         Server::send_to_client(client, ":" + address + " 442 " +  client.get_nick() + " " + _name + " :You're not on that channel\r\n");
         return ;
@@ -136,15 +136,13 @@ void Channel::leave_channel(Client client, std::string reason, std::string addre
     if (reason.length() > 0) {
         end_msg = " PART " + _name + " " + reason + "\r\n";
     }
-    for (int i = 0; i < _clients.size(); i++) {
-        Server::send_to_client(_clients[i], ":" + client.get_nick() + end_msg);
-    }
+    send(":" + client.get_nick() + end_msg, client, true);
     Server::send_to_client(client, ":" + client.get_nick() + end_msg);
 }
 
-std::vector<Client>::iterator Channel::find_client(std::string nick) {
-    std::vector<Client>::iterator it = _clients.begin();
-	std::vector<Client>::iterator ite = _clients.end();
+std::list<Client>::iterator Channel::find_client(std::string nick) {
+    std::list<Client>::iterator it = _clients.begin();
+	std::list<Client>::iterator ite = _clients.end();
 
 	for (; it != ite; ++it) {
 		if (it->get_nick() == nick) {
