@@ -87,15 +87,12 @@ void Server::redirect_cmd(std::vector<std::string> parsed, std::list<Client>::it
             oper(itclient, *(first + 1), *(first + 2));
     }
     if (*first == "QUIT") {
-        if (parsed.size() > 2)
-            quit(*itclient, parsed, false, true);
-        else
-            quit(*itclient, parsed, false, false);
+        quit(*itclient, first + 1, parsed.end(), false);
     }
     if (*first == "kill") {
         if (parsed.size() < 3)
             send_to_client(*itclient, ":" + itclient->get_nick() + " KILL :Not enough parameters\r\n");
-        kill(*itclient, *(first + 1), parsed);
+        kill(*itclient, *(first + 1), first + 2, parsed.end());
     }
     if (*first == "die")
     {
