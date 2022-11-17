@@ -53,10 +53,14 @@ void    Channel::del_client_by_nick(std::string nick_name)
     std::vector<Client>::iterator   it = _clients.begin();
     std::vector<Client>::iterator   itend = _clients.end();
 
-    if (_chanOperator.get_nick() == nick_name)  { _chanOperator.set_nick(""); }
     while (it != itend)
     {
-        if (it->get_nick() == nick_name) { _clients.erase(it); }
+        if (it->get_nick() == nick_name) {
+            if (_chanOperator.get_nick() == nick_name)  { _chanOperator.set_nick(""); }
+            std::cout << it->get_nick() << std::endl;
+            _clients.erase(it);
+            return ;
+        }
         it++;
     }
 }
@@ -111,10 +115,7 @@ bool    Channel::isInInvited(std::string nick) {
     return (false);
 }
 
-std::string Channel::get_topic() {
-    return _topic;
-}
-
+std::string Channel::get_topic() { return _topic; }
 Client  Channel::get_chanOp() { return (_chanOperator); }
 bool    Channel::getMode() { return (_inviteOnly); }
 bool    Channel::getProtecTopic() { return (_protectedTopic); }
@@ -124,7 +125,7 @@ void    Channel::setProtecTopic(bool mode) { _protectedTopic = mode; }
 void    Channel::setTopic(const std::string new_topic) { _topic = new_topic; }
 
 void Channel::leave_channel(Client client, std::string reason, std::string address) {
-    std::vector<Client>::iterator instance = find_client(client.get_nick());
+    std::vector<Client>::iterator instance = find_client(client.get_nick());  
     if (instance == _clients.end()) {
         Server::send_to_client(client, ":" + address + " 442 " +  client.get_nick() + " " + _name + " :You're not on that channel\r\n");
         return ;
@@ -152,4 +153,16 @@ std::vector<Client>::iterator Channel::find_client(std::string nick) {
 	}
 
 	return ite;
+}
+
+bool    Channel::actualize(void)
+{
+    if (_chanOperator.get_nick() == "" && !_clients.empty())
+    {
+        std::cout << _clients.begin()->get_nick() << std::endl;
+        _chanOperator = *_clients.begin();
+        return (true);
+    }
+    else if (_clients.empty()) {return (false); }
+    return (true);
 }

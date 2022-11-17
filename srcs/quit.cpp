@@ -24,13 +24,14 @@ void Server::quit(Client client, std::vector<std::string> comment, bool kill, bo
         }
     }
         //std::string reason = "temporary reason";
-    for (int i = 0; i < _channels.size(); i++) {
-        std::vector<Client> chan_clients = _channels[i].get_clients();
-        std::vector<Client>::iterator it_client = _channels[i].find_client(client.get_nick());
-        if (it_client == chan_clients.end())
-            continue ;
-        _channels[i].send(":" + client.get_nick() + " QUIT :Quit: " + reason + "\r\n", client, false);
-        _channels[i].del_client_by_nick(client.get_nick());
+    std::vector<Channel>::iterator  itChan = _channels.begin();
+    std::vector<Channel>::iterator  itChanend = _channels.end();
+    while (itChan != itChanend) {
+        std::vector<Client> chan_clients = itChan->get_clients();
+        std::vector<Client>::iterator it_client = itChan->find_client(client.get_nick());
+        itChan->send(":" + client.get_nick() + " QUIT :Quit: " + reason + "\r\n", client, false);
+        //_channels[i].del_client_by_nick(client.get_nick());
+        itChan++;
     }
     std::list<Client>::iterator it_client = find_client_by_nick(client.get_nick());
     _toErase.push_back(it_client);

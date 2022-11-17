@@ -35,6 +35,7 @@ class Channel {
         std::vector<Client>::iterator find_client(std::string nick);
         void    del_client_by_nick(std::string nick_name);
         void    change_clients_nick(std::string old_nick, std::string new_nick);
+        bool    actualize(void);
 
     private:
         std::string _name;

@@ -94,8 +94,14 @@ void	Server::handle_pfds()
 	}
 	std::list<std::list<Client>::iterator>::iterator	itit = _toErase.begin();
 	std::list<std::list<Client>::iterator>::iterator	ititend = _toErase.end();
+	std::vector<Channel>::iterator						itChan;
+	std::vector<Channel>::iterator						itChanend;
 	while (itit != ititend)
 	{
+		itChan = _channels.begin();
+		itChanend = _channels.end();
+		std::cout << (*itit)->get_nick() << std::endl;
+		while (itChan != itChanend) { itChan->del_client_by_nick((*itit)->get_nick()); itChan++; }
 		clients.erase(*itit);
 		itit++;
 	}
@@ -108,6 +114,23 @@ void	Server::handle_pfds()
 	}
 	_toErase.clear();
 	_pfdErase.clear();
+	itChan = _channels.begin();
+	itChanend = _channels.end();
+    std::vector<Channel>::iterator tmp;
+    bool    erased(0);
+    while (itChan != itChanend)
+    {
+        if (!itChan->actualize()) {
+            tmp = itChan;
+            itChan++;
+            erased = 1;
+            _channels.erase(tmp);
+        }
+        if (!erased)
+            itChan++;
+        erased = 0;
+    }
+
 }
 
 void	Server::handle_new_connection()
