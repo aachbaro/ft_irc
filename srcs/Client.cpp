@@ -16,6 +16,7 @@ Client::Client() {
 	cmd = "";
 	_emptyPassWord = 0;
 	_operator = false;
+	_connected = false;
 }
 
 Client::Client(int fd, std::string host) : fd(fd), host(host)
@@ -30,6 +31,7 @@ Client::Client(int fd, std::string host) : fd(fd), host(host)
 	cmd = "";
 	_emptyPassWord = 0;
 	_operator = false;
+	_connected = false;
 }
 
 Client::Client( const Client & src )
@@ -45,6 +47,7 @@ Client::Client( const Client & src )
 	save = src.save;
 	cmd = src.cmd;
 	_operator = src._operator;
+	_connected = src._connected;
 }
 
 
@@ -81,68 +84,20 @@ std::ostream &			operator<<( std::ostream & o, Client const & i )
 ** --------------------------------- METHODS ----------------------------------
 */
 
-void		Client::handle_new_entry(std::string str)
-{
-	std::string key = str.substr(0, str.find(" "));
-
-	if (!key.compare("PASS"))
-		this->pass = str.substr(str.find(" ") + 1, str.find("\r") - str.find(" ") - 1);
-	else if (!key.compare("NICK"))
-		this->nick = str.substr(str.find(" ") + 1, str.find("\r") - str.find(" ") - 1);
-	else if (!key.compare("USER"))
-	{
-		this->user = str.substr(str.find(" ") + 1, (str.find(" ", str.find(" ") + 1)) - str.find(" ") - 1);
-		str = str.substr(str.find(" ", str.find(" ") + 1));
-		this->mode = str.substr(str.find(" ") + 1, (str.find(" ", str.find(" ") + 1)) - str.find(" ") - 1);
-		str = str.substr(str.find(" ", str.find(" ") + 1));
-		this->unused = str.substr(str.find(" ") + 1, (str.find(" ", str.find(" ") + 1)) - str.find(" ") - 1);
-		str = str.substr(str.find(" ", str.find(" ") + 1));
-		this->realname = str.substr(str.find(":") + 1);
-	}
-}
-
-void	Client::connection(std::string password)
-{
-	while ((this->nick.empty() || pass.empty() || user.empty()))
-	{
-		if (!nick.empty() && pass.empty())
-			break ;
-		memset(buf, 0, 1000);
-		if (this->save.empty())
-			recv(fd, buf, 1000, 0);
-		if (!complete_command())
-			handle_new_entry(this->cmd);
-		memset(buf, 0, 1000);
-	}
-}
-
-void	Client::get_fullcmd()
-{
-	memset(buf, 0, 1000);
-	while (complete_command())
-	{
-		memset(buf, 0, 1000);
-		recv(fd, buf, 1000, 0);
-	}
-}
-
 int		Client::complete_command()
 {
 	std::string cpy(this->buf);
+	memset(buf, 0, 1000);
 
 	this->save += cpy;
 	if (this->save.find("\r") != -1)
 	{
 		this->cmd = this->save.substr(0, this->save.find("\r"));
 		this->save = this->save.substr(this->save.find("\n") + 1);
-		memset(buf, 0, 1000);
 		return (0);
 	}
 	else
-	{
-		memset(buf, 0, 1000);
 		return (1);
-	}
 }
 
 /*
@@ -160,10 +115,15 @@ int				Client::get_fd() {return (this->fd); }
 std::string		Client::get_cmd() {return (this->cmd); }
 std::string		Client::get_host() {return (this->host);}
 bool			Client::get_operator() {return this->_operator;}
+bool			Client::isRegistered() {return this->_connected;}
 
 void			Client::set_nick(const std::string nickname) {this->nick = nickname; }
 void			Client::set_username(const std::string username) {this->user = username;}
 void			Client::set_operator(const bool to_op) {this->_operator = to_op;}
+void			Client::set_registered(const bool connected) {this->_connected = connected;}
+void			Client::set_pass(const std::string password) {this->pass = password;}
+void			Client::set_realname(const std::string real_name) {this->realname = real_name;}
+void			Client::clear_cmd(void) {cmd.clear(); }
 
 
 /* ************************************************************************** */

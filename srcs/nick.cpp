@@ -1,7 +1,7 @@
 #include "../inc/Server.hpp"
 
 void Server::set_or_change_nick(const std::string new_nickname, std::list<Client>::iterator itclient) {
-
+    if (itclient->get_pass() == "") {return ;}
     if (new_nickname == itclient->get_nick())
         return ;
     if (new_nickname.length() <= 20)
@@ -22,10 +22,14 @@ void Server::set_or_change_nick(const std::string new_nickname, std::list<Client
         }
         if (!check_nicknames(new_nickname))
         {
-            std::string msg = ":" + itclient->get_nick() + " NICK " + new_nickname + "\r\n";
+            std::string name;
+            if (itclient->get_nick().empty()) { name = new_nickname; }
+            else { name = itclient->get_nick(); }
+            std::string msg = ":" + name + " NICK " + new_nickname + "\r\n";
             change_nick_in_channels(itclient->get_nick(), new_nickname);
             itclient->set_nick(new_nickname);
-            send_to_client(*itclient, msg);
+            if (!itclient->get_nick().empty())
+                send_to_client(*itclient, msg);
         }
         else
         {

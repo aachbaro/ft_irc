@@ -18,21 +18,22 @@ std::vector<std::string> Server::parse_cmd(std::string command, std::list<Client
     return parsed;
 }
 
-void Server::redirect_cmd(std::vector<std::string> parsed, std::list<Client>::iterator itclient) {
+void Server::redirect_cmd(std::vector<std::string> parsed, std::list<Client>::iterator itclient, std::string cmd) {
     /* Check what is in cmd private attribute and call the right method. */
     if (parsed.empty())
         return ;
     std::vector<std::string>::iterator first = parsed.begin();
+    if (*first == "PASS") {
+        if (parsed.size() == 2) { reg_password(itclient, *(first + 1)); }
+        else {
+            send_to_client(*itclient, ":" + itclient->get_nick() + " PASS :Wrong number of parameters\r\n");  
+        }
+    }
     if (*first == "USER") {
-        if (parsed.size() < 4) {
-            send_to_client(*itclient, ":" + itclient->get_nick() + " USER :Not enough parameters\r\n");
-            return ;
+        if (parsed.size() >= 3 && cmd.find(":")) { reg_user(itclient, cmd); }
+        else {
+            send_to_client(*itclient, generate_reply("461", itclient->get_nick(), "Not enough parameters"));
         }
-        else if (itclient->get_user().size() > 0) {
-            send_to_client(*itclient, ":" + address + " 462 " + itclient->get_nick() + " :You may not reregister\r\n");
-            return ;
-        }
-        itclient->set_username(*(first + 1));
     }
     if (*first == "JOIN") {
         if (parsed.size() <= 1) {
