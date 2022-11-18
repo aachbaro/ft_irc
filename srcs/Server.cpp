@@ -241,7 +241,7 @@ void	Server::set_listener_sock(void)
 
 
 
-	if ((status = getaddrinfo(NULL, PORT, &hints, &servinfo)) != 0)
+	if ((status = getaddrinfo(NULL, this->port.c_str(), &hints, &servinfo)) != 0)
 	{
 		std::cerr << "getaddrinfo error: " << gai_strerror(status) << std::endl;
 		exit(EXIT_FAILURE);
