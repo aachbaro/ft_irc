@@ -28,7 +28,6 @@ class Client
 
 	void				handle_new_entry(std::string str);
 	int					complete_command();
-	void				connection(std::string password);
 	void				get_fullcmd();
 
 	std::string			get_cap();
@@ -43,10 +42,15 @@ class Client
 	std::string			get_cmd();
 	std::string			get_host();
 	bool				get_operator();
+	bool				isRegistered();
 
 	void				set_nick(const std::string nickname);
 	void				set_username(const std::string username);
 	void				set_operator(const bool to_op);
+	void				set_registered(const bool connected);
+	void				set_pass(const std::string passord);
+	void				set_realname(const std::string real_name);
+	void				clear_cmd(void);
 
 	private:
 
@@ -63,6 +67,7 @@ class Client
 	std::string			cmd;
 	bool				_emptyPassWord;
 	bool				_operator;
+	bool				_connected;
 
 };
 

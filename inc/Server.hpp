@@ -38,7 +38,7 @@ class Server
 		void			polling();
 		void			handle_pfds();
 		void			handle_new_connection();
-		void			handle_command(std::list<Client>::iterator itclient);
+		void			handle_command(std::list<Client>::iterator itclient, std::list<pollfd>::iterator it);
 		void			add_socket_to_list(std::list<pollfd> *pfds, int filed, short ev, short rev);
 		std::string		reply(std::string reply_code, std::string target,std::string msg);
 		int				complete_command();
@@ -78,7 +78,7 @@ class Server
 		std::list<std::list<pollfd>::iterator>	_pfdErase;
 
 		std::vector<std::string>	parse_cmd(std::string command, std::list<Client>::iterator itclient);
-		void 						redirect_cmd(std::vector<std::string> parsed, std::list<Client>::iterator itclient);
+		void 						redirect_cmd(std::vector<std::string> parsed, std::list<Client>::iterator itclient, std::string cmd);
 		void						clear_args();
 		void 						send_welcome_msg(Client client);
 
@@ -94,6 +94,8 @@ class Server
 		void part(std::string channel, std::vector<std::string>::iterator it, std::vector<std::string>::iterator ite, Client client);
         void    change_nick_in_channels(const std::string old_nick, const std::string new_nick);
 		void	print_server_pop(void);
+		void	reg_password(std::list<Client>::iterator client, std::string pass);
+		void	reg_user(std::list<Client>::iterator client, std::string cmd);
 };
 
 std::ostream &			operator<<( std::ostream & o, Server const & i );

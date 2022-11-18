@@ -87,7 +87,7 @@ void	Server::handle_pfds()
 			if (it->fd == this->listener)
 				this->handle_new_connection();
 			else
-				this->handle_command(itclient);
+				this->handle_command(itclient, it);
 		}
 		if (it != pfds.begin())
 			itclient++;
@@ -144,55 +144,26 @@ void	Server::handle_new_connection()
 	std::string host = inet_ntoa(tmp->sin_addr);
 	Client		new_client(new_fd, host);
 
-	new_client.connection(password);
-    const char  *cpy = new_client.get_nick().c_str();
-	new_client.set_username(new_client.get_nick());
-    std::string allowed_char("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefhijklmnopqrstuvwxyz0123456789`|^_-{}[]\\");
-    int        i(0);
-
-    if (new_client.get_nick().length() > 20)
-    {
-        std::string msg = generate_reply("", new_client.get_nick(), new_client.get_nick() + " Nickname too long, max. 20 characters");
-        send_to_client(new_client, msg);
-		return ;
-    }
-    while (cpy[i])
-    {
-        if (allowed_char.find(cpy[i]) == -1)
-        {
-            std::string msg = generate_reply("432", new_client.get_nick(), "Erroneous nickname");
-            send_to_client(new_client, msg);
-            return ;
-        }
-        i++;
-    }
-	if (!this->check_nicknames(new_client.get_nick()))
-	{
-		if (!this->password.compare(new_client.get_pass()))
-		{
-			add_socket_to_list(&this->pfds, new_fd, POLLIN, 0);
-			this->clients.push_back(new_client);
-			send_welcome_msg(new_client);
-			std::cout << "pollserver: new connection :" + new_client.get_nick() << std::endl;
-		}
-		else
-			std::cout << "Wrong password" << std::endl;
-	}
-	else
-	{
-        std::string msg = generate_reply("433", new_client.get_nick(), new_client.get_nick());
-        send_to_client(new_client, msg);
-	}
+	add_socket_to_list(&this->pfds, new_fd, POLLIN, 0);
+	this->clients.push_back(new_client);
 }
 
-void	Server::handle_command(std::list<Client>::iterator itclient)
+void	Server::handle_command(std::list<Client>::iterator itclient, std::list<pollfd>::iterator it)
 {
-	itclient->get_fullcmd();
-	std::string cmd = itclient->get_cmd();
-	std::cout << "from user: " << itclient->get_nick() << "\n------CMD PACKET------\n" + cmd + "\n----------------------" << std::endl;
-	std::vector<std::string> parsed = parse_cmd(cmd, itclient);
-	redirect_cmd(parsed, itclient);
-	itclient->get_cmd().clear();
+	memset(itclient->get_buf(), 0, 1000);
+	if (recv(itclient->get_fd(), itclient->get_buf(), 1000, 0) <= 0) {
+		_pfdErase.push_back(it);
+		_toErase.push_back(itclient);
+		return ;
+	}
+	do {
+		itclient->clear_cmd();
+		if (itclient->complete_command()) { return ; }
+		std::string cmd = itclient->get_cmd();
+		std::cout << "from user: " << itclient->get_nick() << "\n------CMD PACKET------\n" + cmd + "\n----------------------" << std::endl;
+		std::vector<std::string> parsed = parse_cmd(cmd, itclient);
+		redirect_cmd(parsed, itclient, cmd);
+	} while (!itclient->get_cmd().empty());
 }
 
 std::string	Server::reply(std::string reply_code, std::string target, std::string msg)
