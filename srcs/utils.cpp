@@ -23,17 +23,28 @@ void Server::redirect_cmd(std::vector<std::string> parsed, std::list<Client>::it
     if (parsed.empty())
         return ;
     std::vector<std::string>::iterator first = parsed.begin();
+    if (*first == "USER") {
+        if (parsed.size() < 4)
+            send_to_client(*itclient, ":" + itclient->get_nick() + " USER :Not enough parameters\r\n");
+        else {
+            send_to_client(*itclient, ":" + address + " 462 " + itclient->get_nick() + " :You may not reregister\r\n");
+        }
+    }
     if (*first == "JOIN") {
-        if (parsed.size() <= 1)
+        if (parsed.size() <= 1) {
             send_to_client(*itclient, ":" + itclient->get_nick() + " JOIN :Not enough parameters\r\n");
+            return ;
+        }
         std::vector<std::string> channels = get_join_args(*(first + 1));
         for (int i = 0; i < channels.size(); i++) {
             join_or_create_channel(channels[i], itclient);
         }
     }
     if (*first == "PART") {
-        if (parsed.size() <= 1)
+        if (parsed.size() <= 1) {
             send_to_client(*itclient, ":" + itclient->get_nick() + " PART :Not enough parameters\r\n");
+            return ;
+        }
         std::vector<std::string> channels = get_join_args(*(first + 1));
         for (int i = 0; i < channels.size(); i++) {
             part(channels[i], first + 2, parsed.end(), *itclient);
@@ -83,8 +94,10 @@ void Server::redirect_cmd(std::vector<std::string> parsed, std::list<Client>::it
             topic(*(first + 1), itclient);
     }
     if (*first == "OPER") {
-        if (parsed.size() < 3)
+        if (parsed.size() < 3) {
             send_to_client(*itclient, ":" + itclient->get_nick() + " OPER :Not enough parameters\r\n");
+            return ;
+        }
         else
             oper(itclient, *(first + 1), *(first + 2));
     }
@@ -92,8 +105,10 @@ void Server::redirect_cmd(std::vector<std::string> parsed, std::list<Client>::it
         quit(*itclient, first + 1, parsed.end(), false);
     }
     if (*first == "kill") {
-        if (parsed.size() < 3)
+        if (parsed.size() < 3) {
             send_to_client(*itclient, ":" + itclient->get_nick() + " KILL :Not enough parameters\r\n");
+            return ;
+        }
         kill(*itclient, *(first + 1), first + 2, parsed.end());
     }
     if (*first == "die")
