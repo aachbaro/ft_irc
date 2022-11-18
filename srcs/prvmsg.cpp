@@ -1,7 +1,11 @@
 #include "../inc/Server.hpp"
 
 void Server::send_prvmsg(std::string target, std::vector<std::string>::iterator it, std::vector<std::string>::iterator ite, Client client) {
-    std::string msg = (*it).erase(0, 1);
+    std::string msg = "";
+    if ((*it)[0] == ':')
+        msg = (*it).erase(0, 1);
+    else
+        msg = *it;
     ++it;
     for (; it != ite; ++it) {
         msg += " " + *it;
@@ -17,9 +21,16 @@ void Server::send_prvmsg(std::string target, std::vector<std::string>::iterator 
                 break;
             }
         }
-        return chan.send(to_send, client, false);
+        if (it_channel != ite_channel) {
+            return chan.send(to_send, client, false);
+        }
     }
 
-    Client to = *(find_client_by_nick(target));
-    send_to_client(to, to_send);
+    std::list<Client>::iterator to = find_client_by_nick(target);
+    if (to == clients.end()) {
+        send_to_client(client, ":" + address + " 401 " + client.get_nick() + " " + target + " :No such nick/channel\r\n");
+        return ;
+    }
+    Client final_client = *to;
+    send_to_client(final_client, to_send);
 }

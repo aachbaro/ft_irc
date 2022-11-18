@@ -3,6 +3,10 @@
 void Server::part(std::string channel, std::vector<std::string>::iterator it, std::vector<std::string>::iterator ite, Client client) {
     std::string msg = "";
     if (it != ite) {
+        if ((*it)[0] != ':') {
+            send_to_client(client, ":" + address + " 461 " + client.get_nick() + " PART :Syntax Error\r\n");
+            return ;
+        }
         msg = (*it).erase(0, 1);
         ++it;
         for (; it != ite; ++it) {

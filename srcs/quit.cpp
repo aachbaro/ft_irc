@@ -1,7 +1,11 @@
 #include "../inc/Server.hpp"
 
 void Server::quit(Client client, std::vector<std::string>::iterator it, std::vector<std::string>::iterator ite, bool kill) {
-    std::string reason = (*it).erase(0, 1);
+    std::string reason;
+    if ((*it)[0] == ':')
+        reason = (*it).erase(0, 1);
+    else
+        reason = *it;
     if (kill == true) {
         reason += "Killed (" + client.get_nick() + "(";
     }

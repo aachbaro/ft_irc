@@ -57,6 +57,7 @@ class Server
 		void oper(std::list<Client>::iterator client, std::string name, std::string password);
 		void quit(Client client, std::vector<std::string>::iterator it, std::vector<std::string>::iterator ite, bool kill);
 		void kill(Client client, std::string nickname, std::vector<std::string>::iterator it, std::vector<std::string>::iterator ite);
+		void kick(Client client, std::string channel_name, std::string client_name, std::vector<std::string>::iterator it, std::vector<std::string>::iterator ite);
 
 	private:
 

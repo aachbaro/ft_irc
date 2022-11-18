@@ -30,7 +30,7 @@ void Server::set_or_change_nick(const std::string new_nickname, std::list<Client
         else
         {
             std::string msg = generate_reply("433", itclient->get_nick(), new_nickname);
-            send_to_client(*itclient, msg);
+            send_to_client(*itclient, ":" + address + " 433 " + itclient->get_nick() + " " + new_nickname + " :Nickname is already in use\r\n");
         }
     }
     else

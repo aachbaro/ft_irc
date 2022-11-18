@@ -24,25 +24,33 @@ void Server::redirect_cmd(std::vector<std::string> parsed, std::list<Client>::it
         return ;
     std::vector<std::string>::iterator first = parsed.begin();
     if (*first == "USER") {
-        if (parsed.size() < 4)
+        if (parsed.size() < 4) {
             send_to_client(*itclient, ":" + itclient->get_nick() + " USER :Not enough parameters\r\n");
-        else {
-            send_to_client(*itclient, ":" + address + " 462 " + itclient->get_nick() + " :You may not reregister\r\n");
+            return ;
         }
+        else if (itclient->get_user().size() > 0) {
+            send_to_client(*itclient, ":" + address + " 462 " + itclient->get_nick() + " :You may not reregister\r\n");
+            return ;
+        }
+        itclient->set_username(*(first + 1));
     }
     if (*first == "JOIN") {
         if (parsed.size() <= 1) {
-            send_to_client(*itclient, ":" + itclient->get_nick() + " JOIN :Not enough parameters\r\n");
+            send_to_client(*itclient, ":" + address + " 461 " + itclient->get_nick() + " JOIN :Syntax Error\r\n");
             return ;
         }
         std::vector<std::string> channels = get_join_args(*(first + 1));
         for (int i = 0; i < channels.size(); i++) {
+            if (channels[i][0] != '#') {
+                send_to_client(*itclient, ":" + address + " 403 " + channels[i] + " :Bad Channel Mask\r\n");
+                continue;
+            }
             join_or_create_channel(channels[i], itclient);
         }
     }
     if (*first == "PART") {
         if (parsed.size() <= 1) {
-            send_to_client(*itclient, ":" + itclient->get_nick() + " PART :Not enough parameters\r\n");
+            send_to_client(*itclient, ":" + address + " 461 " + itclient->get_nick() + " PART :Syntax Error\r\n");
             return ;
         }
         std::vector<std::string> channels = get_join_args(*(first + 1));
@@ -54,12 +62,28 @@ void Server::redirect_cmd(std::vector<std::string> parsed, std::list<Client>::it
         pong_reply(*(first + 1), *itclient);
     }
     if (*first == "PRIVMSG") {
+        if (parsed.size() < 2) {
+            send_to_client(*itclient, ":" + address + " 411 " + itclient->get_nick() + " :No recipient given (PRIVMSG)\r\n");
+            return ;
+        }
+        if (parsed.size() < 3) {
+            send_to_client(*itclient, ":" + address + " 412 " + itclient->get_nick() + " :No text to send\r\n");
+            return ;
+        }
         std::vector<std::string> targets = get_join_args(*(first + 1));
         for (int i = 0; i < targets.size(); i++) {
             send_prvmsg(targets[i], first + 2, parsed.end(), *itclient);
         }
     }
     if (*first == "NOTICE") {
+         if (parsed.size() < 2) {
+            send_to_client(*itclient, ":" + address + " 411 " + itclient->get_nick() + " :No recipient given (NOTICE)\r\n");
+            return ;
+        }
+        if (parsed.size() < 3) {
+            send_to_client(*itclient, ":" + address + " 412 " + itclient->get_nick() + " :No text to send\r\n");
+            return ;
+        }
         std::vector<std::string> targets = get_join_args(*(first + 1));
         for (int i = 0; i < targets.size(); i++) {
             send_notice(targets[i], first + 2, parsed.end(), *itclient);
@@ -95,18 +119,28 @@ void Server::redirect_cmd(std::vector<std::string> parsed, std::list<Client>::it
     }
     if (*first == "OPER") {
         if (parsed.size() < 3) {
-            send_to_client(*itclient, ":" + itclient->get_nick() + " OPER :Not enough parameters\r\n");
+            send_to_client(*itclient, ":" + address + " 461 " + itclient->get_nick() + " OPER :Syntax Error:\r\n");
             return ;
         }
         else
             oper(itclient, *(first + 1), *(first + 2));
     }
     if (*first == "QUIT") {
-        quit(*itclient, first + 1, parsed.end(), false);
+        std::vector<std::string> reason;
+        if (parsed.size() == 1) {
+            reason.push_back(":leaving");
+        }
+        else if (parsed.size() > 1) {
+            std::vector<std::string>::iterator bis = first + 1;
+            for (; bis != parsed.end(); ++bis) {
+                reason.push_back(*bis);
+            }
+        }
+        quit(*itclient, reason.begin(), reason.end(), false);
     }
     if (*first == "kill") {
         if (parsed.size() < 3) {
-            send_to_client(*itclient, ":" + itclient->get_nick() + " KILL :Not enough parameters\r\n");
+            send_to_client(*itclient, ":" + address + " 461 " + itclient->get_nick() + " KILL :Syntax Error:\r\n");
             return ;
         }
         kill(*itclient, *(first + 1), first + 2, parsed.end());
@@ -115,6 +149,30 @@ void Server::redirect_cmd(std::vector<std::string> parsed, std::list<Client>::it
     {
         if (itclient->get_operator()) { _die = true; }
         else { send_to_client(*itclient, ":" + address + " 481 " + itclient->get_nick() + " :Permission Denied\r\n"); }
+    }
+    if (*first == "KICK") {
+        if (parsed.size() < 3) {
+            send_to_client(*itclient, ":" + address + " 461 " + itclient->get_nick() + " KICK :Syntax Error\r\n");
+            return ;
+        }
+        std::vector<std::string> joined_channels = get_join_args(*(first + 1));
+        std::vector<std::string> users = get_join_args(*(first + 2));
+        if (users.size() > 1) {
+            send_to_client(*itclient, ":" + address + " 461 " + itclient->get_nick() + " KICK :Syntax Error\r\n");
+            return ;
+        }
+        for (int i = 0; i < joined_channels.size(); i++) {
+            std::vector<std::string> default_msg;
+            if (parsed.size() > 3) {
+                std::vector<std::string>::iterator bis = first + 3;
+                for (; bis != parsed.end(); ++bis) {
+                    default_msg.push_back(*bis);
+                }
+            }
+            else
+                default_msg.push_back(":Kicked because you're an idiot.");
+            kick(*itclient, joined_channels[i], users[0], default_msg.begin(), default_msg.end());
+        }
     }
 }
 
