@@ -95,6 +95,8 @@ void  Channel::names(Client client) {
     for (; it != ite; ++it) {
         if (it != _clients.begin())
             clients += " ";
+        if (it->get_nick() == _chanOperator.get_nick())
+            clients += "@";
         clients += it->get_nick();
     }
     std::string msg = ":127.0.0.1 353 " + client.get_nick() + " = " + this->get_name() + " :" + clients + "\r\n";

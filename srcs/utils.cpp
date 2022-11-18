@@ -174,6 +174,21 @@ void Server::redirect_cmd(std::vector<std::string> parsed, std::list<Client>::it
             kick(*itclient, joined_channels[i], users[0], default_msg.begin(), default_msg.end());
         }
     }
+    if (*first == "NAMES") {
+        std::vector<std::string> joined_channels;
+        if (parsed.size() == 1) {
+            std::list<Channel>::iterator it_channel = _channels.begin();
+            std::list<Channel>::iterator ite_channel = _channels.end();
+            for (; it_channel != ite_channel; ++it_channel) {
+                joined_channels.push_back(it_channel->get_name());
+            }
+        }
+        else
+            joined_channels = get_join_args(*(first + 1));
+        for (int i = 0; i < joined_channels.size(); i++) {
+            names(*itclient, joined_channels[i]);
+        }
+    }
 }
 
 void    Server::print_server_pop(void)
