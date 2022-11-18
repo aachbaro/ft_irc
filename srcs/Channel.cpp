@@ -123,6 +123,7 @@ void    Channel::addInvited(std::string invited) { _invited.push_back(invited); 
 void    Channel::setMode(bool mode) { _inviteOnly = mode; }
 void    Channel::setProtecTopic(bool mode) { _protectedTopic = mode; }
 void    Channel::setTopic(const std::string new_topic) { _topic = new_topic; }
+void    Channel::set_operator(Client client) { _chanOperator = client; }
 
 void Channel::leave_channel(Client client, std::string reason, std::string address) {
     std::list<Client>::iterator instance = find_client(client.get_nick());

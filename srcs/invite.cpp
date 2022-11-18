@@ -3,8 +3,8 @@
 void Server::invite(std::string channel, std::string target, std::list<Client>::iterator itclient) {
 
     /* CHECK IF THE CHAN EXISTS */
-    std::vector<Channel>::iterator itChan = _channels.begin();
-    std::vector<Channel>::iterator itChanend = _channels.end();
+    std::list<Channel>::iterator itChan = _channels.begin();
+    std::list<Channel>::iterator itChanend = _channels.end();
     bool    isExisting(0);
 
     while (itChan != itChanend) {

@@ -66,7 +66,9 @@ void Server::redirect_cmd(std::vector<std::string> parsed, std::list<Client>::it
     if (*first == "MODE")
     {
         if (parsed.size() == 3)
-            mode_cmd(*(first + 1), *(first + 2), itclient);
+            mode_cmd(*(first + 1), (first + 2)->erase(0, 1), itclient);
+        if (parsed.size() == 2) {}
+
     }
     if (*first == "INVITE")
     {
@@ -115,8 +117,8 @@ void    Server::print_server_pop(void)
 	}
 	std::cout << std::endl;
        /* Affichage des channel et de leur population */
-    std::vector<Channel>::iterator  itChan = _channels.begin();
-    std::vector<Channel>::iterator  itChanend = _channels.end();
+    std::list<Channel>::iterator  itChan = _channels.begin();
+    std::list<Channel>::iterator  itChanend = _channels.end();
     std::list<Client>::iterator     itCli;
     std::list<Client>::iterator     itCliend;
 

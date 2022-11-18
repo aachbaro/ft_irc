@@ -69,7 +69,7 @@ class Server
 		std::vector<std::string> args;
 		int					listener;
 		std::list<Client>	clients;
-		std::vector<Channel> _channels;
+		std::list<Channel> _channels;
 		time_t				start;
 		bool				_die;
 		std::list<std::list<Client>::iterator>	_toErase;

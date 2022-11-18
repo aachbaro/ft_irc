@@ -10,8 +10,8 @@ void Server::part(std::string channel, std::vector<std::string>::iterator it, st
         }
     }
 
-    std::vector<Channel>::iterator it_channel = this->_channels.begin();
-    std::vector<Channel>::iterator ite_channel = this->_channels.end();
+    std::list<Channel>::iterator it_channel = this->_channels.begin();
+    std::list<Channel>::iterator ite_channel = this->_channels.end();
     for (; it_channel != ite_channel; ++it_channel) {
         if (it_channel->get_name() == channel) {
             it_channel->leave_channel(client, msg, address);

@@ -42,8 +42,8 @@ void Server::set_or_change_nick(const std::string new_nickname, std::list<Client
 
 void    Server::change_nick_in_channels(const std::string old_nick, const std::string new_nick)
 {
-    std::vector<Channel>::iterator  itChan = _channels.begin();
-    std::vector<Channel>::iterator  itChanend = _channels.end();
+    std::list<Channel>::iterator  itChan = _channels.begin();
+    std::list<Channel>::iterator  itChanend = _channels.end();
 
     while (itChan != itChanend)
     {

@@ -94,8 +94,8 @@ void	Server::handle_pfds()
 	}
 	std::list<std::list<Client>::iterator>::iterator	itit = _toErase.begin();
 	std::list<std::list<Client>::iterator>::iterator	ititend = _toErase.end();
-	std::vector<Channel>::iterator						itChan;
-	std::vector<Channel>::iterator						itChanend;
+	std::list<Channel>::iterator						itChan;
+	std::list<Channel>::iterator						itChanend;
 	while (itit != ititend)
 	{
 		itChan = _channels.begin();
@@ -116,16 +116,17 @@ void	Server::handle_pfds()
 	_pfdErase.clear();
 	itChan = _channels.begin();
 	itChanend = _channels.end();
-    std::vector<Channel>::iterator tmp;
+    std::list<Channel>::iterator tmp;
     bool    erased(0);
     while (itChan != itChanend)
     {
-        if (!itChan->actualize()) {
+        if (itChan->get_clients().empty()) {
             tmp = itChan;
             itChan++;
             erased = 1;
             _channels.erase(tmp);
         }
+		else { itChan->set_operator(*itChan->get_clients().begin()); }
         if (!erased)
             itChan++;
         erased = 0;

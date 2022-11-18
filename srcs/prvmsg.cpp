@@ -9,8 +9,8 @@ void Server::send_prvmsg(std::string target, std::vector<std::string>::iterator 
     std::string to_send = ":" + client.get_nick() + " PRIVMSG "  + target + " " + msg + "\r\n";
     Channel chan;
     if (target[0] == '#') {
-        std::vector<Channel>::iterator it_channel = _channels.begin();
-        std::vector<Channel>::iterator ite_channel = _channels.end();
+        std::list<Channel>::iterator it_channel = _channels.begin();
+        std::list<Channel>::iterator ite_channel = _channels.end();
         for (; it_channel != ite_channel; ++it_channel) {
             if (it_channel->get_name() == target) {
                 chan = *it_channel;

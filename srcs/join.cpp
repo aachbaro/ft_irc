@@ -20,8 +20,8 @@ void Server::join_or_create_channel(std::string name, std::list<Client>::iterato
         - If channel doesn't exist, create it.
         - For both cases, send message to client
     */
-    std::vector<Channel>::iterator it = this->_channels.begin();
-    std::vector<Channel>::iterator ite = this->_channels.end();
+    std::list<Channel>::iterator it = this->_channels.begin();
+    std::list<Channel>::iterator ite = this->_channels.end();
     for (; it != ite; ++it) {
         if (it->get_name() == name) {
             if (it->getMode() == true && !it->isInInvited(itclient->get_nick())) {

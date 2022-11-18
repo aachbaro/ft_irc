@@ -12,8 +12,8 @@ void Server::quit(Client client, std::vector<std::string>::iterator it, std::vec
     if (kill == true) {
         reason += "))";
     }
-    std::vector<Channel>::iterator  itChan = _channels.begin();
-    std::vector<Channel>::iterator  itChanend = _channels.end();
+    std::list<Channel>::iterator  itChan = _channels.begin();
+    std::list<Channel>::iterator  itChanend = _channels.end();
     while (itChan != itChanend) {
         std::list<Client> chan_clients = itChan->get_clients();
         std::list<Client>::iterator it_client = itChan->find_client(client.get_nick());
