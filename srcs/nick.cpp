@@ -14,7 +14,7 @@ void Server::set_or_change_nick(const std::string new_nickname, std::list<Client
         {
             if (allowed_char.find(cpy[i]) == std::string::npos)
             {
-                std::string msg = generate_reply("432", itclient->get_nick(), "Erroneous nickname\r\n");
+                std::string msg = generate_reply("432", itclient->get_nick(), "Erroneous nickname");
                 send_to_client(*itclient, msg);
                 return ;
             }
@@ -45,7 +45,7 @@ void Server::set_or_change_nick(const std::string new_nickname, std::list<Client
     }
     else
     {
-        std::string msg = generate_reply("", itclient->get_nick(), new_nickname + " Nickname too long, max. 20 characters\r\n");
+        std::string msg = generate_reply("", itclient->get_nick(), new_nickname + " Nickname too long, max. 20 characters");
         send_to_client(*itclient, msg);
     }
 }
