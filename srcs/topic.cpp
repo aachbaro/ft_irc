@@ -38,7 +38,9 @@ void Server::topic(std::string chan, std::string topic, std::list<Client>::itera
         }
     }
     topic = topic.substr(topic.find(":") + 1);
+    std::cout << topic << std::endl;
     itChan->setTopic(topic);
+    std::cout << itChan->get_topic();
     //send_to_client();
 }
 
@@ -79,7 +81,7 @@ void    Server::topic(std::string chan, std::list<Client>::iterator itclient)
         std::string msg_topic = ":127.0.0.1 332 " + itclient->get_nick() + " " + itChan->get_name() + " " + itChan->get_topic() + "\r\n";
         itChan->send(msg_topic, *itclient, true);
         std::string timer(ctime(&start));
-        msg_topic = ":127.0.0.1 333 " + itclient->get_nick() + " " + itChan->get_name() + " :" + timer + "\r\n";
+        msg_topic = ":127.0.0.1 333 " + itclient->get_nick() + " " + itChan->get_name() + " " + itclient->get_nick() + " " + timer + "\r\n";
         itChan->send(msg_topic, *itclient, true);
     }
 }

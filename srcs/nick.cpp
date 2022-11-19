@@ -14,7 +14,7 @@ void Server::set_or_change_nick(const std::string new_nickname, std::list<Client
         {
             if (allowed_char.find(cpy[i]) == -1)
             {
-                std::string msg = generate_reply("432", itclient->get_nick(), "Erroneous nickname");
+                std::string msg = generate_reply("432", itclient->get_nick(), "Erroneous nickname\r\n");
                 send_to_client(*itclient, msg);
                 return ;
             }
@@ -30,16 +30,22 @@ void Server::set_or_change_nick(const std::string new_nickname, std::list<Client
             itclient->set_nick(new_nickname);
             if (!itclient->get_nick().empty())
                 send_to_client(*itclient, msg);
+            if (itclient->get_user() == "" || itclient->isRegistered()) {return ;}
+            send_welcome_msg(*itclient);
+	        std::cout << "pollserver: new connection :" + itclient->get_nick() << std::endl;
+            itclient->set_registered(true);
         }
         else
         {
-            std::string msg = generate_reply("433", itclient->get_nick(), new_nickname);
-            send_to_client(*itclient, ":" + address + " 433 " + itclient->get_nick() + " " + new_nickname + " :Nickname is already in use\r\n");
+            std::string msg = generate_reply("433", new_nickname, new_nickname);
+            //send_to_client(*itclient, ":" + address + " 433 " + itclient->get_nick() + " " + new_nickname + " :Nickname is already in use\r\n");
+            send_to_client(*itclient, msg);
+            return ;
         }
     }
     else
     {
-        std::string msg = generate_reply("", itclient->get_nick(), new_nickname + " Nickname too long, max. 20 characters");
+        std::string msg = generate_reply("", itclient->get_nick(), new_nickname + " Nickname too long, max. 20 characters\r\n");
         send_to_client(*itclient, msg);
     }
 }

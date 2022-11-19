@@ -29,11 +29,23 @@ void Server::redirect_cmd(std::vector<std::string> parsed, std::list<Client>::it
             send_to_client(*itclient, ":" + itclient->get_nick() + " PASS :Wrong number of parameters\r\n");  
         }
     }
+    if (*first == "NICK") {
+        if (parsed.size() == 1 || (first + 1)->empty())
+        {
+            std::string msg = generate_reply("431", "", "No nickname given\r\n");
+            send_to_client(*itclient, msg);
+		    return ;
+        }
+        set_or_change_nick(*(first + 1), itclient);
+    }
     if (*first == "USER") {
         if (parsed.size() >= 3 && cmd.find(":")) { reg_user(itclient, cmd); }
         else {
-            send_to_client(*itclient, generate_reply("461", itclient->get_nick(), "Not enough parameters"));
+            send_to_client(*itclient, generate_reply("461", itclient->get_nick(), "Not enough parameters\r\n"));
         }
+    }
+    if (!itclient->isRegistered()) {
+        return ;
     }
     if (*first == "JOIN") {
         if (parsed.size() <= 1) {
@@ -90,15 +102,6 @@ void Server::redirect_cmd(std::vector<std::string> parsed, std::list<Client>::it
             send_notice(targets[i], first + 2, parsed.end(), *itclient);
         }
     }
-    if (*first == "NICK") {
-        if (parsed.size() == 1 || (first + 1)->empty())
-        {
-            std::string msg = generate_reply("431", "", "No nickname given");
-            send_to_client(*itclient, msg);
-		    return ;
-        }
-        set_or_change_nick(*(first + 1), itclient);
-    }
     if (*first == "MODE")
     {
         if (parsed.size() == 3)
@@ -113,8 +116,8 @@ void Server::redirect_cmd(std::vector<std::string> parsed, std::list<Client>::it
     }
     if (*first == "TOPIC")
     {
-        if (parsed.size() == 3)
-            topic(*(first + 1), *(first + 2), itclient);
+        if (parsed.size() > 2)
+            topic(*(first + 1), cmd, itclient);
         if (parsed.size() >= 2)
             topic(*(first + 1), itclient);
     }
