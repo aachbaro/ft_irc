@@ -66,10 +66,21 @@ Client::~Client()
 
 Client &				Client::operator=( Client const & rhs )
 {
-	//if ( this != &rhs )
-	//{
-		//this->_value = rhs.getValue();
-	//}
+	if ( this != &rhs )
+	{
+		nick = rhs.nick;
+		user = rhs.user;
+		host = rhs.host;
+		mode = rhs.mode;
+		unused = rhs.unused;
+		realname = rhs.realname;
+		pass = rhs.pass;
+		fd = rhs.fd;
+		save = rhs.save;
+		cmd = rhs.cmd;
+		_operator = rhs._operator;
+		_connected = rhs._connected;
+	}
 	return *this;
 }
 

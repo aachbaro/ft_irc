@@ -1,87 +1,89 @@
 #include "../inc/Server.hpp"
 
-void Server::topic(std::string chan, std::string topic, std::list<Client>::iterator itclient) {
-    /* CHECK IF THE CHAN EXISTS */
+void Server::topic(Client client, std::string channel_name, std::vector<std::string>::iterator it, std::vector<std::string>::iterator ite) {
+    std::string topic = "";
+    if (it != ite) {
+        if ((*it)[0] != ':') {
+            send_to_client(client, ":" + address + " 461 " + client.get_nick() + " TOPIC :Syntax Error\r\n");
+            return ;
+        }
+        topic = (*it).erase(0, 1);
+        ++it;
+        for (; it != ite; ++it) {
+            topic += " " + *it;
+        }
+    }
     std::list<Channel>::iterator itChan = _channels.begin();
     std::list<Channel>::iterator itChanend = _channels.end();
-    bool    isExisting(0);
-
-    while (itChan != itChanend) {
-        if (itChan->get_name() == chan) { isExisting = 1; break ; }
-        itChan++;
+    for (;itChan != itChanend; ++itChan) {
+        if (itChan->get_name() == channel_name) {
+            break ;
+        }
     }
-    if (!isExisting) {
-        std::string reply = generate_reply("403", itclient->get_nick(), "No such channel");
-        send_to_client(*itclient, reply);
+    if (itChan == itChanend) {
+        send_to_client(client, ":" + address + " 403 " + client.get_nick() + " " + channel_name + " :No such channel\r\n");
         return ;
     }
-    /* CHECK IF THE ASKER IS IN THE CHAN */
     std::list<Client> chan_clients = itChan->get_clients();
     std::list<Client>::iterator itUsers = chan_clients.begin();
     std::list<Client>::iterator itUsersend = chan_clients.end();
-    bool    isInChan(0);
-
-    while (itUsers != itUsersend) {
-        if (itclient->get_nick() == itUsers->get_nick()) { isInChan = 1; break ; };
-        itUsers++;
+    for (; itUsers != itUsersend; ++itUsers) {
+        if (client.get_nick() == itUsers->get_nick()) {
+            break ;
+        }
     }
-    if (!isInChan) {
-        std::string reply = generate_reply("442", itclient->get_nick(), "You're not on that channel");
-        send_to_client(*itclient, reply);
+    if (itUsers == itUsersend) {
+        send_to_client(client, ":" + address + " 442 " + client.get_nick() + " :You're not on that channel\r\n");
         return ;
     }
+    Client chan_op = itChan->get_chanOp();
     if (itChan->getProtecTopic()) {
-        if (itclient->get_nick() != itChan->get_chanOp().get_nick()) {
-            std::string reply = generate_reply("482", itclient->get_nick(), "You're not channel operator");
-            send_to_client(*itclient, reply);
+        if (chan_op.get_nick() != client.get_nick()) {
+            send_to_client(client, ":" + address + " 482 " + client.get_nick() + " " + channel_name + " :You're not channel operator\r\n");
             return ;
         }
     }
-    topic = topic.substr(topic.find(":") + 1);
-    std::cout << topic << std::endl;
     itChan->setTopic(topic);
-    std::cout << itChan->get_topic();
-    //send_to_client();
+    std::string msg_topic = ":127.0.0.1 332 " + client.get_nick() + " " + itChan->get_name() + " :" + itChan->get_topic() + "\r\n";
+    itChan->send(msg_topic, client, true);
 }
 
-void    Server::topic(std::string chan, std::list<Client>::iterator itclient)
-{
-    /* CHECK IF THE CHAN EXISTS */
+
+void Server::send_topic(Client client, std::string channel_name) {
     std::list<Channel>::iterator itChan = _channels.begin();
     std::list<Channel>::iterator itChanend = _channels.end();
-    bool    isExisting(0);
-
-    while (itChan != itChanend) {
-        if (itChan->get_name() == chan) { isExisting = 1; break ; }
-        itChan++;
+    for (;itChan != itChanend; ++itChan) {
+        if (itChan->get_name() == channel_name) {
+            break;
+        }
     }
-    if (!isExisting) {
-        std::string reply = generate_reply("403", itclient->get_nick(), "No such channel");
-        send_to_client(*itclient, reply);
+    if (itChan == itChanend) {
+        send_to_client(client, ":" + address + " 403 " + client.get_nick() + " " + channel_name + " :No such channel\r\n");
         return ;
     }
+    std::string chan_topic = itChan->get_topic();
 
-    /* CHECK IF THE ASKER IS IN THE CHAN */
+
     std::list<Client> chan_clients = itChan->get_clients();
     std::list<Client>::iterator itUsers = chan_clients.begin();
     std::list<Client>::iterator itUsersend = chan_clients.end();
-    bool    isInChan(0);
-
-    while (itUsers != itUsersend) {
-        if (itUsers->get_nick() == itclient->get_nick()) { isInChan = 1; break ; };
-        itUsers++;
+    for (; itUsers != itUsersend; ++itUsers) {
+        if (client.get_nick() == itUsers->get_nick()) {
+            break ;
+        }
     }
-    if (!isInChan) {
-        std::string reply = generate_reply("442", itclient->get_nick(), "You're not on that channel");
-        send_to_client(*itclient, reply);
+    if (itUsers == itUsersend) {
+        send_to_client(client, ":" + address + " 442 " + client.get_nick() + " :You're not on that channel\r\n");
         return ;
     }
-    if (itChan->get_topic().empty()) { itChan->send(generate_reply("331", itclient->get_nick(), ""), *itclient, true); }
-    else {
-        std::string msg_topic = ":127.0.0.1 332 " + itclient->get_nick() + " " + itChan->get_name() + " " + itChan->get_topic() + "\r\n";
-        itChan->send(msg_topic, *itclient, true);
-        std::string timer(ctime(&start));
-        msg_topic = ":127.0.0.1 333 " + itclient->get_nick() + " " + itChan->get_name() + " " + itclient->get_nick() + " " + timer + "\r\n";
-        itChan->send(msg_topic, *itclient, true);
+    if (chan_topic.size() == 0) {
+        send_to_client(client, ":" + address + " 331 " + client.get_nick() + " :No topic is set\r\n");
+        return ;
     }
+    Client chan_op = itChan->get_chanOp();
+    std::string msg_topic = ":127.0.0.1 332 " + client.get_nick() + " " + itChan->get_name() + " " + itChan->get_topic() + "\r\n";
+    send_to_client(client, msg_topic);
+    std::string timer(ctime(&start));
+    msg_topic = ":127.0.0.1 333 " + client.get_nick() + " " + itChan->get_name() + " " + chan_op.get_nick() + " " + timer + "\r\n";
+    send_to_client(client, msg_topic);
 }

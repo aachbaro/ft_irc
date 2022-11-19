@@ -116,10 +116,16 @@ void Server::redirect_cmd(std::vector<std::string> parsed, std::list<Client>::it
     }
     if (*first == "TOPIC")
     {
-        if (parsed.size() > 2)
-            topic(*(first + 1), cmd, itclient);
-        if (parsed.size() >= 2)
-            topic(*(first + 1), itclient);
+        if (parsed.size() < 2) {
+            send_to_client(*itclient, ":" + address + " 461 " + itclient->get_nick() + " TOPIC :Syntax Error\r\n");
+            return ;
+        }
+        if (parsed.size() > 2) {
+            topic(*itclient, *(first + 1), first + 2, parsed.end());
+        }
+        if (parsed.size() == 2) {
+            send_topic(*itclient, *(first + 1));
+        }
     }
     if (*first == "OPER") {
         if (parsed.size() < 3) {

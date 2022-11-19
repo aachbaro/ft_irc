@@ -3,7 +3,7 @@
 
 Channel::Channel(): _name(""), _clients(), _topic(""), _inviteOnly(false) {}
 Channel::Channel(std::string name): _name(name), _clients(), _topic(""), _inviteOnly(false) {}
-Channel::Channel(std::string name, Client client): _name(name), _topic(""), _chanOperator(client), _inviteOnly(false) {
+Channel::Channel(std::string name, Client client): _name(name), _topic(""), _chanOperator(client), _inviteOnly(false), _protectedTopic(false) {
     /*
         Constructor with client
         - Add client in Channel
