@@ -110,7 +110,7 @@ void Server::redirect_cmd(std::vector<std::string> parsed, std::list<Client>::it
     {
         if (parsed.size() == 3)
             mode_cmd(*(first + 1), (first + 2)->erase(0, 1), itclient);
-        if (parsed.size() == 2) {}
+        if (parsed.size() == 2) { mode_cmd(*(first + 1), itclient); }
 
     }
     if (*first == "INVITE")

@@ -18,9 +18,9 @@ void Server::invite(std::string channel, std::string target, std::list<Client>::
     }
 
     /* CHECK IF THE ASKER IS IN THE CHAN */
-    std::list<Client> chan_clients = itChan->get_clients();
-    std::list<Client>::iterator itUsers = chan_clients.begin();
-    std::list<Client>::iterator itUsersend = chan_clients.end();
+    std::list<Client> cpyClient = itChan->get_clients();
+    std::list<Client>::iterator itUsers = cpyClient.begin();
+    std::list<Client>::iterator itUsersend = cpyClient.end();
     bool    isInChan(0);
 
     while (itUsers != itUsersend) {
@@ -40,8 +40,7 @@ void Server::invite(std::string channel, std::string target, std::list<Client>::
         }
     }
     /* CHECK IF THE INVITED IS IN THE CHAN */
-    itUsers = itChan->get_clients().begin();
-    itChan->get_clients().end();
+    itUsers = cpyClient.begin();
     isInChan = 0;
 
     while (itUsers != itUsersend) {
@@ -54,7 +53,10 @@ void Server::invite(std::string channel, std::string target, std::list<Client>::
         return ;
     }
     /* SEND INVITATION TO THE TARGET */
-    std::string reply = generate_reply("341", find_client_by_nick(target)->get_nick(), channel);
+    if (find_client_by_nick(target) == clients.end()) { return ;}
+    std::string reply = ":" + address + " 341 " + itclient->get_nick() + " " + target + " " + channel + "\r\n";
+    send_to_client(*itclient, reply);
+    reply = ":" + itclient->get_nick() + " INVITE " + target + " " + itChan->get_name() + "\r\n";
     send_to_client(*(find_client_by_nick(target)), reply);
     itChan->addInvited(target);
 }

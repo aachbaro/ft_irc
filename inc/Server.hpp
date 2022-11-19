@@ -88,6 +88,7 @@ class Server
 		void		set_or_change_nick(const std::string new_nickname, std::list<Client>::iterator itclient);
 		void		invite(std::string channel, std::string client, std::list<Client>::iterator itclient);
 		void		mode_cmd(std::string target, std::string param,std::list<Client>::iterator itclient);
+		void		mode_cmd(std::string target, std::list<Client>::iterator itclient);
 		void topic(Client client, std::string channel_name, std::vector<std::string>::iterator it, std::vector<std::string>::iterator ite);
 		void send_topic(Client client, std::string channel_name);
 		std::vector<std::string> get_join_args(std::string parsed);
