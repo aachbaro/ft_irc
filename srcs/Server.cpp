@@ -75,7 +75,7 @@ void	Server::poll_loop()
 		print_server_pop();
 
 		/* Scan de la liste de fd  en recherche d'activite*/
-		std::cout << "polling fds..." << std::endl;
+		std::cout << "Polling fds..." << std::endl;
 		polling();
 		handle_pfds();
 	}
@@ -86,7 +86,6 @@ void	Server::polling()
 	/* traduction de la liste chainee de pfds en array pour la fonction poll */
 	this->arr_pfds = (pollfd *)malloc(sizeof(this->arr_pfds) * sizeof(pfds.size()));
 	std::copy(this->pfds.begin(), this->pfds.end(), this->arr_pfds);
-	std::cout << "pfds : " << pfds.size() << std::endl;
 	poll(this->arr_pfds, this->pfds.size(), -1);
 	std::copy(this->arr_pfds, this->arr_pfds + this->pfds.size(), this->pfds.begin());
 	free(arr_pfds);
@@ -101,7 +100,6 @@ void	Server::handle_pfds()
 
 	for (; it != itend; it++)
 	{
-		//std::cout << "it->client: " << itclient->get_nick() << std::endl;
 		if (it->revents & POLLIN)
 		{
 			if (it->fd == this->listener)
@@ -180,7 +178,7 @@ void	Server::handle_command(std::list<Client>::iterator itclient, std::list<poll
 		itclient->clear_cmd();
 		if (itclient->complete_command()) { return ; }
 		std::string cmd = itclient->get_cmd();
-		std::cout << "from user: " << itclient->get_nick() << "\n------CMD PACKET------\n" + cmd + "\n----------------------" << std::endl;
+		std::cout << "From user: " << itclient->get_nick() << "\n------CMD PACKET------\n" + cmd + "\n----------------------" << std::endl;
 		std::vector<std::string> parsed = parse_cmd(cmd);
 		redirect_cmd(parsed, itclient, cmd);
 	} while (!itclient->get_cmd().empty());

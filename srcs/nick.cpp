@@ -32,7 +32,6 @@ void Server::set_or_change_nick(const std::string new_nickname, std::list<Client
                 send_to_client(*itclient, msg);
             if (itclient->get_user() == "" || itclient->isRegistered()) {return ;}
             send_welcome_msg(*itclient);
-	        std::cout << "pollserver: new connection :" + itclient->get_nick() << std::endl;
             itclient->set_registered(true);
         }
         else

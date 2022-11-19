@@ -244,8 +244,8 @@ void    Server::print_server_pop(void)
         std::list<Client> chan_clients = itChan->get_clients();
         itCli = chan_clients.begin();
         itCliend = chan_clients.end();
-        std::cout << "------- " + itChan->get_name() + ": " + "topic :" + itChan->get_topic() << std::endl;
-        std::cout << "channel operator: " + itChan->get_chanOp().get_nick() << std::endl;
+        std::cout << "------- " + itChan->get_name() + ": " + "Topic :" + itChan->get_topic() << std::endl;
+        std::cout << "Channel operator: " + itChan->get_chanOp().get_nick() << std::endl;
         while (itCli != itCliend)
         {
             std::cout << " - " + itCli->get_nick();

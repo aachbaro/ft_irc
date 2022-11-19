@@ -58,7 +58,6 @@ void    Channel::del_client_by_nick(std::string nick_name)
     {
         if (it->get_nick() == nick_name) {
             if (_chanOperator.get_nick() == nick_name)  { _chanOperator.set_nick(""); }
-            std::cout << it->get_nick() << std::endl;
             _clients.erase(it);
             return ;
         }
@@ -161,7 +160,6 @@ bool    Channel::actualize(void)
 {
     if (_chanOperator.get_nick() == "" && !_clients.empty())
     {
-        std::cout << _clients.begin()->get_nick() << std::endl;
         _chanOperator = *_clients.begin();
         return (true);
     }

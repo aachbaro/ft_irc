@@ -15,7 +15,7 @@ void    Server::reg_user(std::list<Client>::iterator client, std::string cmd)
     else {
         if (client->get_nick() == "") {return ;}
         send_welcome_msg(*client);
-	    std::cout << "pollserver: new connection :" + client->get_nick() << std::endl;
+	    std::cout << "Pollserver: new connection :" + client->get_nick() << std::endl;
         client->set_registered(true);
     }
 }
