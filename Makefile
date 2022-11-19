@@ -29,6 +29,9 @@ SRCS		= srcs/main.cpp \
 OBJS		= ${SRCS:.cpp=.o}
 
 CC			= c++
+CXX			= c++
+CXXFLAGS	= -Wall -Wextra -Werror -std=c++98
+RM 			= rm -f
 CFLAGS		= -Wall -Wextra -Werror -std=c++98
 
 all: ${NAME}
@@ -37,7 +40,7 @@ $(NAME)	: ${OBJS} ${INC}
 	${CC} ${CFLAGS} ${OBJS} -o $@
 
 clean:
-	${RM} ${OBJS} ${DEP}
+	${RM} ${OBJS}
 
 fclean: clean
 	${RM} ${NAME}
@@ -45,5 +48,3 @@ fclean: clean
 re: fclean all
 
 .PHONY: all clean fclean re
-
--include ${DEP}
