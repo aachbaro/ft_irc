@@ -24,7 +24,8 @@ SRCS		= srcs/main.cpp \
 				srcs/kick.cpp \
 				srcs/names.cpp \
 				srcs/user.cpp \
-				srcs/pass.cpp
+				srcs/pass.cpp \
+				srcs/list.cpp
 
 CC			= c++
 CFLAGS		= #-Wall -Wextra -Werror -std=c++98

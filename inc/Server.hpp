@@ -59,6 +59,7 @@ class Server
 		void kill(Client client, std::string nickname, std::vector<std::string>::iterator it, std::vector<std::string>::iterator ite);
 		void kick(Client client, std::string channel_name, std::string client_name, std::vector<std::string>::iterator it, std::vector<std::string>::iterator ite);
 		void names(Client client, std::string name);
+		void list(Client client, std::string channel_name);
 
 	private:
 
