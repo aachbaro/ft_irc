@@ -17,8 +17,8 @@ void Server::mode_cmd(std::string target, std::string param, std::list<Client>::
                     i++;
                 }
                 //send_to_client(*itclient, generate_reply("324", itclient->get_nick(), it->get_name() + " channel mode is " + param));
-                send_to_client(*itclient, ":" + address + " 324 " + itclient->get_nick() + " " + it->get_name() + " channel mode is " + param);
-                std::string msg = ":" + address + " MODE " + it->get_name() + " " + param + "\r\n";
+                //send_to_client(*itclient, ":" + address + " 324 " + itclient->get_nick() + " " + it->get_name() + " channel mode is " + param);
+                std::string msg = ":" + itclient->get_nick() + " MODE " + it->get_name() + " " + param + "\r\n";
                 it->send(msg, *itclient, true);
             }
             else { send_to_client(*itclient, generate_reply("483", itclient->get_nick(), "You're not channel operator")); }
@@ -31,11 +31,13 @@ void Server::mode_cmd(std::string target, std::list<Client>::iterator itclient) 
     std::list<Channel>::iterator it = this->_channels.begin();
     std::list<Channel>::iterator ite = this->_channels.end();
     std::string     mode;
-    for (it; it != ite; it++) {
+    for (; it != ite; it++) {
         if (it->get_name() == target) {
                 if (it->getMode()) { mode += "i"; }
                 if (it->getProtecTopic()) { mode += "t"; }
-                send_to_client(*itclient, generate_reply("324", itclient->get_nick(), it->get_name() + " channel mode is " + mode));
+                std::string reply = ":" + address + " 324 " + itclient->get_nick() + " " + target + " " + mode + "\r\n";
+                send_to_client(*itclient, reply);
+                //send_to_client(*itclient, generate_reply("324", itclient->get_nick(), it->get_name() + " channel mode is " + mode));
             }
         //else { send_to_client(*itclient, generate_reply("483", itclient->get_nick(), "You're not channel operator")); }
     }
