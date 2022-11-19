@@ -19,7 +19,7 @@ Client::Client() {
 	_connected = false;
 }
 
-Client::Client(int fd, std::string host) : fd(fd), host(host)
+Client::Client(int fd_, std::string host) : host(host)
 {
 	nick = "";
 	user = "";
@@ -32,6 +32,7 @@ Client::Client(int fd, std::string host) : fd(fd), host(host)
 	_emptyPassWord = 0;
 	_operator = false;
 	_connected = false;
+	fd = fd_;
 }
 
 Client::Client( const Client & src )
@@ -84,13 +85,6 @@ Client &				Client::operator=( Client const & rhs )
 	return *this;
 }
 
-std::ostream &			operator<<( std::ostream & o, Client const & i )
-{
-	//o << "Value = " << i.getValue();
-	return o;
-}
-
-
 /*
 ** --------------------------------- METHODS ----------------------------------
 */
@@ -101,7 +95,7 @@ int		Client::complete_command()
 	memset(buf, 0, 1000);
 
 	this->save += cpy;
-	if (this->save.find("\r") != -1)
+	if (this->save.find("\r") != std::string::npos)
 	{
 		this->cmd = this->save.substr(0, this->save.find("\r"));
 		this->save = this->save.substr(this->save.find("\n") + 1);

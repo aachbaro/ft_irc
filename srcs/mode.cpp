@@ -6,7 +6,7 @@ void Server::mode_cmd(std::string target, std::string param, std::list<Client>::
     const char    *cpy = param.c_str();
     int             i(0);
     bool           plusminus(0);
-    for (it; it != ite; it++) {
+    for (; it != ite; it++) {
         if (it->get_name() == target) {
             if (it->get_chanOp().get_nick() == itclient->get_nick()) {
                 while (cpy[i]) {

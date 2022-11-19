@@ -78,7 +78,7 @@ class Server
 		std::list<std::list<Client>::iterator>	_toErase;
 		std::list<std::list<pollfd>::iterator>	_pfdErase;
 
-		std::vector<std::string>	parse_cmd(std::string command, std::list<Client>::iterator itclient);
+		std::vector<std::string>	parse_cmd(std::string command);
 		void 						redirect_cmd(std::vector<std::string> parsed, std::list<Client>::iterator itclient, std::string cmd);
 		void						clear_args();
 		void 						send_welcome_msg(Client client);

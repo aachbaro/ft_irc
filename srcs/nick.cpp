@@ -12,7 +12,7 @@ void Server::set_or_change_nick(const std::string new_nickname, std::list<Client
 
         while (cpy[i])
         {
-            if (allowed_char.find(cpy[i]) == -1)
+            if (allowed_char.find(cpy[i]) == std::string::npos)
             {
                 std::string msg = generate_reply("432", itclient->get_nick(), "Erroneous nickname\r\n");
                 send_to_client(*itclient, msg);

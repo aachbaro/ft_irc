@@ -20,7 +20,6 @@ void Server::quit(Client client, std::vector<std::string>::iterator it, std::vec
     std::list<Channel>::iterator  itChanend = _channels.end();
     while (itChan != itChanend) {
         std::list<Client> chan_clients = itChan->get_clients();
-        std::list<Client>::iterator it_client = itChan->find_client(client.get_nick());
         itChan->send(":" + client.get_nick() + " QUIT :Quit: " + reason + "\r\n", client, false);
         itChan++;
     }

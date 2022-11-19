@@ -12,6 +12,20 @@ Server::Server(std::string pword, std::string given_port) : password(pword), por
 
 Server::Server( const Server & src )
 {
+	this->password = src.password;
+	this->port = src.port;
+	this->address = src.address;
+	this->pfds = src.pfds;
+	this->arr_pfds = src.arr_pfds;
+	this->cmd = src.cmd;
+	this->args = src.args;
+	this->listener = src.listener;
+	this->clients = src.clients;
+	this->_channels = src._channels;
+	this->start = src.start;
+	this->_die = src._die;
+	this->_toErase = src._toErase;
+	this->_pfdErase = src._pfdErase;
 }
 
 
@@ -30,19 +44,25 @@ Server::~Server()
 
 Server &				Server::operator=( Server const & rhs )
 {
-	//if ( this != &rhs )
-	//{
-		//this->_value = rhs.getValue();
-	//}
+	if ( this != &rhs )
+	{
+		this->password = rhs.password;
+		this->port = rhs.port;
+		this->address = rhs.address;
+		this->pfds = rhs.pfds;
+		this->arr_pfds = rhs.arr_pfds;
+		this->cmd = rhs.cmd;
+		this->args = rhs.args;
+		this->listener = rhs.listener;
+		this->clients = rhs.clients;
+		this->_channels = rhs._channels;
+		this->start = rhs.start;
+		this->_die = rhs._die;
+		this->_toErase = rhs._toErase;
+		this->_pfdErase = rhs._pfdErase;
+	}
 	return *this;
 }
-
-std::ostream &			operator<<( std::ostream & o, Server const & i )
-{
-	//o << "Value = " << i.getValue();
-	return o;
-}
-
 
 /*
 ** --------------------------------- METHODS ----------------------------------
@@ -79,7 +99,7 @@ void	Server::handle_pfds()
 	std::list<Client>::iterator itclient = clients.begin();
 	std::list<pollfd>::iterator itend = this->pfds.end();
 
-	for (it ; it != itend; it++)
+	for (; it != itend; it++)
 	{
 		//std::cout << "it->client: " << itclient->get_nick() << std::endl;
 		if (it->revents & POLLIN)
@@ -161,7 +181,7 @@ void	Server::handle_command(std::list<Client>::iterator itclient, std::list<poll
 		if (itclient->complete_command()) { return ; }
 		std::string cmd = itclient->get_cmd();
 		std::cout << "from user: " << itclient->get_nick() << "\n------CMD PACKET------\n" + cmd + "\n----------------------" << std::endl;
-		std::vector<std::string> parsed = parse_cmd(cmd, itclient);
+		std::vector<std::string> parsed = parse_cmd(cmd);
 		redirect_cmd(parsed, itclient, cmd);
 	} while (!itclient->get_cmd().empty());
 }

@@ -1,13 +1,14 @@
 #include "../inc/Channel.hpp"
 #include "../inc/Server.hpp"
 
-Channel::Channel(): _name(""), _clients(), _topic(""), _inviteOnly(false) {}
-Channel::Channel(std::string name): _name(name), _clients(), _topic(""), _inviteOnly(false) {}
-Channel::Channel(std::string name, Client client): _name(name), _topic(""), _chanOperator(client), _inviteOnly(false), _protectedTopic(false) {
+Channel::Channel(): _name(""), _clients(), _inviteOnly(false), _protectedTopic(false) { _topic = "";}
+Channel::Channel(std::string name): _name(name), _clients(), _inviteOnly(false), _protectedTopic(false) {_topic = "";}
+Channel::Channel(std::string name, Client client): _name(name), _chanOperator(client), _inviteOnly(false), _protectedTopic(false) {
     /*
         Constructor with client
         - Add client in Channel
     */
+   _topic = "";
     add_client(client);
 }
 Channel::~Channel() {

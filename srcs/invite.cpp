@@ -18,8 +18,9 @@ void Server::invite(std::string channel, std::string target, std::list<Client>::
     }
 
     /* CHECK IF THE ASKER IS IN THE CHAN */
-    std::list<Client>::iterator itUsers = itChan->get_clients().begin();
-    std::list<Client>::iterator itUsersend = itChan->get_clients().end();
+    std::list<Client> chan_clients = itChan->get_clients();
+    std::list<Client>::iterator itUsers = chan_clients.begin();
+    std::list<Client>::iterator itUsersend = chan_clients.end();
     bool    isInChan(0);
 
     while (itUsers != itUsersend) {

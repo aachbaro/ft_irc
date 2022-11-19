@@ -1,7 +1,7 @@
 NAME		= ircserv
-SRCSDIR		= .
-OBJSDIR		= objs
-INCLUDES	= .
+INC			= inc/Server.hpp \
+				inc/Client.hpp \
+				inc/Channel.hpp
 SRCS		= srcs/main.cpp \
 				srcs/Server.cpp \
 				srcs/Client.cpp \
@@ -26,16 +26,24 @@ SRCS		= srcs/main.cpp \
 				srcs/user.cpp \
 				srcs/pass.cpp \
 				srcs/list.cpp
+OBJS		= ${SRCS:.cpp=.o}
 
 CC			= c++
-CFLAGS		= #-Wall -Wextra -Werror -std=c++98
+CFLAGS		= -Wall -Wextra -Werror -std=c++98
 
-all: $(NAME)
-$(NAME): $(SRCSDIR)/$(SRCS)
-	@echo "Assembling $@"
-	@$(CC) $(CFLAGS) -o $@ $^
+all: ${NAME}
+
+$(NAME)	: ${OBJS} ${INC}
+	${CC} ${CFLAGS} ${OBJS} -o $@
+
 clean:
+	${RM} ${OBJS} ${DEP}
+
 fclean: clean
-	rm -rf $(NAME)
+	${RM} ${NAME}
+
 re: fclean all
-.PHONY: all clean fclean re test
+
+.PHONY: all clean fclean re
+
+-include ${DEP}

@@ -1,6 +1,6 @@
 #include "../inc/Server.hpp"
 
-std::vector<std::string> Server::parse_cmd(std::string command, std::list<Client>::iterator itclient) {
+std::vector<std::string> Server::parse_cmd(std::string command) {
     /*
         Parse command.
         - Put the first word (JOIN, MODE...) in cmd private attribute.
@@ -53,7 +53,7 @@ void Server::redirect_cmd(std::vector<std::string> parsed, std::list<Client>::it
             return ;
         }
         std::vector<std::string> channels = get_join_args(*(first + 1));
-        for (int i = 0; i < channels.size(); i++) {
+        for (size_t i = 0; i < channels.size(); i++) {
             if (channels[i][0] != '#') {
                 send_to_client(*itclient, ":" + address + " 403 " + channels[i] + " :Bad Channel Mask\r\n");
                 continue;
@@ -67,11 +67,15 @@ void Server::redirect_cmd(std::vector<std::string> parsed, std::list<Client>::it
             return ;
         }
         std::vector<std::string> channels = get_join_args(*(first + 1));
-        for (int i = 0; i < channels.size(); i++) {
+        for (size_t i = 0; i < channels.size(); i++) {
             part(channels[i], first + 2, parsed.end(), *itclient);
         }
     }
     if (*first == "PING") {
+        if (parsed.size() == 1) {
+            send_to_client(*itclient, ":" + address + " 461 " + itclient->get_nick() + " PING :Syntax Error\r\n");
+            return ;
+        }
         pong_reply(*(first + 1), *itclient);
     }
     if (*first == "PRIVMSG") {
@@ -84,7 +88,7 @@ void Server::redirect_cmd(std::vector<std::string> parsed, std::list<Client>::it
             return ;
         }
         std::vector<std::string> targets = get_join_args(*(first + 1));
-        for (int i = 0; i < targets.size(); i++) {
+        for (size_t i = 0; i < targets.size(); i++) {
             send_prvmsg(targets[i], first + 2, parsed.end(), *itclient);
         }
     }
@@ -98,7 +102,7 @@ void Server::redirect_cmd(std::vector<std::string> parsed, std::list<Client>::it
             return ;
         }
         std::vector<std::string> targets = get_join_args(*(first + 1));
-        for (int i = 0; i < targets.size(); i++) {
+        for (size_t i = 0; i < targets.size(); i++) {
             send_notice(targets[i], first + 2, parsed.end(), *itclient);
         }
     }
@@ -171,7 +175,7 @@ void Server::redirect_cmd(std::vector<std::string> parsed, std::list<Client>::it
             send_to_client(*itclient, ":" + address + " 461 " + itclient->get_nick() + " KICK :Syntax Error\r\n");
             return ;
         }
-        for (int i = 0; i < joined_channels.size(); i++) {
+        for (size_t i = 0; i < joined_channels.size(); i++) {
             std::vector<std::string> default_msg;
             if (parsed.size() > 3) {
                 std::vector<std::string>::iterator bis = first + 3;
@@ -195,7 +199,7 @@ void Server::redirect_cmd(std::vector<std::string> parsed, std::list<Client>::it
         }
         else
             joined_channels = get_join_args(*(first + 1));
-        for (int i = 0; i < joined_channels.size(); i++) {
+        for (size_t i = 0; i < joined_channels.size(); i++) {
             names(*itclient, joined_channels[i]);
         }
     }
@@ -210,7 +214,7 @@ void Server::redirect_cmd(std::vector<std::string> parsed, std::list<Client>::it
         }
         else
             joined_channels = get_join_args(*(first + 1));
-        for(int i = 0; i < joined_channels.size(); i++) {
+        for(size_t i = 0; i < joined_channels.size(); i++) {
             list(*itclient, joined_channels[i]);
         }
     }
